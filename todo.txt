@@ -1,0 +1,11 @@
+S Task
+==============================================================================
+
+O selftest.h:
+	Test more hashes against their test vectors.
+
+O hashoutput.*:
+	Implement output templates.
+
+O hashoutput.*:
+	Support short path names output.
