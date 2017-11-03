@@ -42,37 +42,37 @@
 
  LICENSE TERMS
 
- The free distribution and use of this software in both source and binary 
+ The free distribution and use of this software in both source and binary
  form is allowed (with or without changes) provided that:
 
-   1. distributions of this source code include the above copyright 
+   1. distributions of this source code include the above copyright
       notice, this list of conditions and the following disclaimer;
 
    2. distributions in binary form include the above copyright
       notice, this list of conditions and the following disclaimer
       in the documentation and/or other associated materials;
 
-   3. the copyright holder's name is not used to endorse products 
-      built using this software without specific written permission. 
+   3. the copyright holder's name is not used to endorse products
+      built using this software without specific written permission.
 
  ALTERNATIVELY, provided that this notice is retained in full, this product
  may be distributed under the terms of the GNU General Public License (GPL),
  in which case the provisions of the GPL apply INSTEAD OF those given above.
- 
+
  DISCLAIMER
 
  This software is provided 'as is' with no explicit or implied warranties
- in respect of its properties, including, but not limited to, correctness 
+ in respect of its properties, including, but not limited to, correctness
  and/or fitness for purpose.
  ---------------------------------------------------------------------------
  Issue Date: 26/08/2003
 
  This is a byte oriented version of SHA2 that operates on arrays of bytes
  stored in memory. This code implements sha256, sha384 and sha512 but the
- latter two functions rely on efficient 64-bit integer operations that 
+ latter two functions rely on efficient 64-bit integer operations that
  may not be very efficient on 32-bit machines
 
- My thanks to Erik Andersen <andersen@codepoet.org> for testing this code 
+ My thanks to Erik Andersen <andersen@codepoet.org> for testing this code
  on big-endian systems and for his assistance with corrections
 */
 
@@ -96,14 +96,14 @@ public:
 	~CSHA256Hash();
 
 	const char *GetName() { return "SHA256"; }
-	const char *GetShortName() { return "SHA256"; }
-	unsigned long GetLength() {	return 32; }
-	unsigned long GetInternalLength() { return 64; }
+	const char *GetShortName() { return "sha256"; }
+	UINTPREF GetLength() { return 32; }
+	UINTPREF GetInternalLength() { return 64; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_final, 32); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_final, 32); }
 
 private:
 	void _Compile();
@@ -122,14 +122,14 @@ public:
 	~CSHA384Hash();
 
 	const char *GetName() { return "SHA384"; }
-	const char *GetShortName() { return "SHA384"; }
-	unsigned long GetLength() {	return 48; }
-	unsigned long GetInternalLength() { return 128; }
+	const char *GetShortName() { return "sha384"; }
+	UINTPREF GetLength() { return 48; }
+	UINTPREF GetInternalLength() { return 128; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_final, 48); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_final, 48); }
 
 private:
 	void _Compile();
@@ -148,14 +148,14 @@ public:
 	~CSHA512Hash();
 
 	const char *GetName() { return "SHA512"; }
-	const char *GetShortName() { return "SHA512"; }
-	unsigned long GetLength() {	return 64; }
-	unsigned long GetInternalLength() { return 128; }
+	const char *GetShortName() { return "sha512"; }
+	UINTPREF GetLength() { return 64; }
+	UINTPREF GetInternalLength() { return 128; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_final, 64); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_final, 64); }
 
 private:
 	void _Compile();

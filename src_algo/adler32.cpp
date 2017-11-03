@@ -48,7 +48,7 @@ void CAdler32Hash::Init(RH_DATA_INFO *pInfo)
 	m_s2 = (m_adler >> 16) & CONST32(0x0000FFFF);
 }
 
-void CAdler32Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CAdler32Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
 	UWORD32 i;
 

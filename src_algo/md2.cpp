@@ -73,11 +73,11 @@ void CMD2Hash::Init(RH_DATA_INFO *pInfo)
 	m_count = 0;
 }
 
-void CMD2Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CMD2Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long L = 0;
-	unsigned char t = 0;
-	int i = 0, j = 0;
+	UWORD32 L;
+	UWORD8 t;
+	INTPREF i, j;
 
 	while(uLen)
     {
@@ -113,13 +113,13 @@ void CMD2Hash::Update(const unsigned char *pBuf, unsigned long uLen)
 
 void CMD2Hash::Final()
 {
-	unsigned char padding[16];
-	unsigned long padlen = 0;
-	unsigned int i = 0;
+	UWORD8 padding[16];
+	UWORD32 padlen;
+	UINTPREF i;
 
 	padlen = 16 - m_count;
 
-	for(i = 0; i < padlen; i++) padding[i] = (unsigned char)padlen;
+	for(i = 0; i < padlen; i++) padding[i] = (UWORD8)padlen;
 
 	Update(padding, padlen);
 	Update(m_C, 16);

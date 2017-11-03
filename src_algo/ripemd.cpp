@@ -35,10 +35,10 @@
 
 #include "ripemd.h"
 
-#define RMD128_F(x, y, z) ((x) ^ (y) ^ (z)) 
-#define RMD128_G(x, y, z) (((x) & (y)) | (~(x) & (z))) 
+#define RMD128_F(x, y, z) ((x) ^ (y) ^ (z))
+#define RMD128_G(x, y, z) (((x) & (y)) | (~(x) & (z)))
 #define RMD128_H(x, y, z) (((x) | ~(y)) ^ (z))
-#define RMD128_I(x, y, z) (((x) & (z)) | ((y) & ~(z))) 
+#define RMD128_I(x, y, z) (((x) & (z)) | ((y) & ~(z)))
 
 #define RMD128_FF(a, b, c, d, x, s) \
 	(a) += RMD128_F((b), (c), (d)) + (x); \
@@ -74,10 +74,10 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
-#define RMD160_F(x, y, z) ((x) ^ (y) ^ (z)) 
-#define RMD160_G(x, y, z) (((x) & (y)) | (~(x) & (z))) 
+#define RMD160_F(x, y, z) ((x) ^ (y) ^ (z))
+#define RMD160_G(x, y, z) (((x) & (y)) | (~(x) & (z)))
 #define RMD160_H(x, y, z) (((x) | ~(y)) ^ (z))
-#define RMD160_I(x, y, z) (((x) & (z)) | ((y) & ~(z))) 
+#define RMD160_I(x, y, z) (((x) & (z)) | ((y) & ~(z)))
 #define RMD160_J(x, y, z) ((x) ^ ((y) | ~(z)))
 
 #define RMD160_FF(a, b, c, d, e, x, s) \
@@ -143,7 +143,7 @@ CRMD128Hash::~CRMD128Hash()
 void CRMD128Hash::_Compress()
 {
 	UWORD32 aa, bb, cc, dd, aaa, bbb, ccc, ddd, X[16];
-	int i;
+	INTPREF i;
 
 	for(i = 0; i < 16; i++)
 	{
@@ -171,7 +171,7 @@ void CRMD128Hash::_Compress()
 	RMD128_FF(dd, aa, bb, cc, X[13],  7);
 	RMD128_FF(cc, dd, aa, bb, X[14],  9);
 	RMD128_FF(bb, cc, dd, aa, X[15],  8);
-                         
+
 	RMD128_GG(aa, bb, cc, dd, X[ 7],  7);
 	RMD128_GG(dd, aa, bb, cc, X[ 4],  6);
 	RMD128_GG(cc, dd, aa, bb, X[13],  8);
@@ -223,7 +223,7 @@ void CRMD128Hash::_Compress()
 	RMD128_II(cc, dd, aa, bb, X[ 6],  5);
 	RMD128_II(bb, cc, dd, aa, X[ 2], 12);
 
-	RMD128_III(aaa, bbb, ccc, ddd, X[ 5],  8); 
+	RMD128_III(aaa, bbb, ccc, ddd, X[ 5],  8);
 	RMD128_III(ddd, aaa, bbb, ccc, X[14],  9);
 	RMD128_III(ccc, ddd, aaa, bbb, X[ 7],  9);
 	RMD128_III(bbb, ccc, ddd, aaa, X[ 0], 11);
@@ -308,9 +308,9 @@ void CRMD128Hash::Init(RH_DATA_INFO *pInfo)
 	m_length = 0;
 }
 
-void CRMD128Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CRMD128Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long n;
+	UINTPREF n;
 
 	while(uLen > 0)
 	{
@@ -331,15 +331,15 @@ void CRMD128Hash::Update(const unsigned char *pBuf, unsigned long uLen)
 
 void CRMD128Hash::Final()
 {
-	int i;
+	INTPREF i;
 
 	m_length += m_curlen * 8;
 
 	m_buf[m_curlen++] = 0x80;
 
-	if (m_curlen > 56)
+	if(m_curlen > 56)
 	{
-		while (m_curlen < 64)
+		while(m_curlen < 64)
 		{
 			m_buf[m_curlen++] = 0;
 		}
@@ -348,7 +348,7 @@ void CRMD128Hash::Final()
 		m_curlen = 0;
 	}
 
-	while (m_curlen < 56)
+	while(m_curlen < 56)
 	{
 		m_buf[m_curlen++] = 0;
 	}
@@ -375,9 +375,9 @@ CRMD160Hash::~CRMD160Hash()
 void CRMD160Hash::_Compress()
 {
 	UWORD32 aa, bb, cc, dd, ee, aaa, bbb, ccc, ddd, eee, X[16];
-	int i;
+	INTPREF i;
 
-	for (i = 0; i < 16; i++)
+	for(i = 0; i < 16; i++)
 	{
 		LOAD32L(X[i], m_buf + (i << 2));
 	}
@@ -404,7 +404,7 @@ void CRMD160Hash::_Compress()
 	RMD160_FF(cc, dd, ee, aa, bb, X[13],  7);
 	RMD160_FF(bb, cc, dd, ee, aa, X[14],  9);
 	RMD160_FF(aa, bb, cc, dd, ee, X[15],  8);
-                         
+
 	RMD160_GG(ee, aa, bb, cc, dd, X[ 7],  7);
 	RMD160_GG(dd, ee, aa, bb, cc, X[ 4],  6);
 	RMD160_GG(cc, dd, ee, aa, bb, X[13],  8);
@@ -490,7 +490,7 @@ void CRMD160Hash::_Compress()
 	RMD160_JJJ(bbb, ccc, ddd, eee, aaa, X[ 3], 12);
 	RMD160_JJJ(aaa, bbb, ccc, ddd, eee, X[12],  6);
 
-	RMD160_III(eee, aaa, bbb, ccc, ddd, X[ 6],  9); 
+	RMD160_III(eee, aaa, bbb, ccc, ddd, X[ 6],  9);
 	RMD160_III(ddd, eee, aaa, bbb, ccc, X[11], 13);
 	RMD160_III(ccc, ddd, eee, aaa, bbb, X[ 3], 15);
 	RMD160_III(bbb, ccc, ddd, eee, aaa, X[ 7],  7);
@@ -577,9 +577,9 @@ void CRMD160Hash::Init(RH_DATA_INFO *pInfo)
 	m_length   = 0;
 }
 
-void CRMD160Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CRMD160Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long n;
+	UINTPREF n;
 
 	while(uLen > 0)
 	{
@@ -600,7 +600,7 @@ void CRMD160Hash::Update(const unsigned char *pBuf, unsigned long uLen)
 
 void CRMD160Hash::Final()
 {
-	int i;
+	INTPREF i;
 
 	m_length += m_curlen * 8;
 

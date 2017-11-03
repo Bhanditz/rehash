@@ -1,1 +1,4 @@
 The Linux version was compiled using GCC 3.2.
+
+If possible, compile ReHash on your own by changing to the 'gnuc'
+directory and typing 'make'. The binary will be created in 'bin_lx'.

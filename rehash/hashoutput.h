@@ -44,6 +44,7 @@
 
 #define RH_MAX_CHAR_CODE 12
 #define RH_MAX_HASH_STRING 128
+#define RH_MAX_OUTPUT_BUFFER 1024
 
 class CHashOutput
 {
@@ -56,23 +57,27 @@ public:
 
 	void InitOutput(void *pManager);
 	void NewDataSource(const char *pFileDesc, bool bHMAC, char *pHMACKey);
-	void Output(const char *pHashName, unsigned char *pHash, unsigned long uLen);
+	void Output(const char *pHashName, UWORD8 *pHash, UINTPREF uLen);
 	void CloseDataSource();
 	void CloseOutput();
 
 private:
-	void _OutputHashBytes(unsigned char *pHash, unsigned long uLen);
+	void _OutputHashBytes(UWORD8 *pHash, UINTPREF uLen);
 
-	unsigned int m_nMaxHashName;
+	UINTPREF m_nMaxHashName;
 
-	int m_nOutputStyle;
-	int m_nByteSpaces;
-	int m_nCombineWords;
+	INTPREF m_nOutputStyle;
+	INTPREF m_nByteSpaces;
+	INTPREF m_nCombineWords;
 	char m_szCharCode[RH_MAX_CHAR_CODE];
 	bool m_bPadToFullWord;
 	bool m_bBase64;
 
+	char *m_pNewLine;
+
 	char m_szHashBuffer[RH_MAX_HASH_STRING];
+	char m_szBuffer[RH_MAX_OUTPUT_BUFFER];
+	char m_szByteBuffer[16];
 };
 
 #endif // ___HASH_OUTPUT_H___

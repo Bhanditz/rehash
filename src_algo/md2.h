@@ -45,14 +45,14 @@ public:
 	~CMD2Hash();
 
 	const char *GetName() { return "MD2"; }
-	const char *GetShortName() { return "MD2"; }
-	unsigned long GetLength() {	return 16; }
-	unsigned long GetInternalLength() {	return 48; }
+	const char *GetShortName() { return "md2"; }
+	UINTPREF GetLength() { return 16; }
+	UINTPREF GetInternalLength() { return 48; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_final, 16); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_final, 16); }
 
 private:
 	UWORD8 m_X[48], m_C[16], m_buf[16];

@@ -118,9 +118,10 @@ void CXUM32Hash::Init(RH_DATA_INFO *pInfo)
 	m_xum32 = CONST32(0x00000000); // Initialize XUM-32
 }
 
-void CXUM32Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CXUM32Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	UWORD32 i, g;
+	UINTPREF i;
+	UWORD32 g;
 
 	for(i = 0; i < uLen; i++)
 	{
@@ -134,7 +135,7 @@ void CXUM32Hash::Update(const unsigned char *pBuf, unsigned long uLen)
 		m_elf32 &= ~g;
 	}
 
-	m_xum32 += uLen; // Update data-size
+	m_xum32 += (UWORD32)uLen; // Update data-size
 }
 
 void CXUM32Hash::Final()

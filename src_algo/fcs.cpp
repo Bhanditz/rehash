@@ -33,7 +33,7 @@
 #include "fcs.h"
 
 // Fast 16 bit FCS lookup table
-static const unsigned short g_pFCS16Tab[256] = {
+static const UWORD16 g_pFCS16Tab[256] = {
 	0x0000, 0x1189, 0x2312, 0x329B, 0x4624, 0x57AD, 0x6536, 0x74BF,
 	0x8C48, 0x9DC1, 0xAF5A, 0xBED3, 0xCA6C, 0xDBE5, 0xE97E, 0xF8F7,
 	0x1081, 0x0108, 0x3393, 0x221A, 0x56A5, 0x472C, 0x75B7, 0x643E,
@@ -68,7 +68,7 @@ static const unsigned short g_pFCS16Tab[256] = {
 	0x7BC7, 0x6A4E, 0x58D5, 0x495C, 0x3DE3, 0x2C6A, 0x1EF1, 0x0F78
 };
 
-static const unsigned long g_pFCS32Tab[256] = {
+static const UWORD32 g_pFCS32Tab[256] = {
 	0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
 	0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
 	0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988,
@@ -151,9 +151,9 @@ void CFCS16Hash::Init(RH_DATA_INFO *pInfo)
 	m_fcs16 = 0xFFFF;
 }
 
-void CFCS16Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CFCS16Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i = 0;
+	UINTPREF i;
 
 	for(i = 0; i < uLen; i++)
 		m_fcs16 = (m_fcs16 >> 8) ^ g_pFCS16Tab[pBuf[i] ^ (m_fcs16 & 0xFF)];
@@ -179,9 +179,9 @@ void CFCS32Hash::Init(RH_DATA_INFO *pInfo)
 	m_fcs32 = 0xFFFFFFFF;
 }
 
-void CFCS32Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CFCS32Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i = 0;
+	UINTPREF i;
 
 	for(i = 0; i < uLen; i++)
 		m_fcs32 = (m_fcs32 >> 8) ^ g_pFCS32Tab[pBuf[i] ^ (m_fcs32 & 0xFF)];

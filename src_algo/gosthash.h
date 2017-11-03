@@ -42,25 +42,25 @@ public:
 	~CGOSTHash();
 
 	const char *GetName() { return "GOST-Hash"; }
-	const char *GetShortName() { return "GOSTHash"; }
-	unsigned long GetLength() {	return 32; }
-	unsigned long GetInternalLength() { return 32; }
+	const char *GetShortName() { return "gost"; }
+	UINTPREF GetLength() { return 32; }
+	UINTPREF GetInternalLength() { return 32; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
 
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_digest, 32); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_digest, 32); }
 
 private:
-	void _Compress(unsigned long *h, unsigned long *m);
-	void _Bytes(const unsigned char *pBuf, unsigned long uBits);
+	void _Compress(UWORD32 *h, UWORD32 *m);
+	void _Bytes(const UWORD8 *pBuf, UWORD32 uBits);
 
 	UWORD32 m_sum[8];
 	UWORD32 m_hash[8];
 	UWORD32 m_len[8];
 	UWORD8 m_partial[32];
-	UWORD32 m_partial_bytes;  
+	UWORD32 m_partial_bytes;
 
 	UWORD8 m_digest[32];
 };

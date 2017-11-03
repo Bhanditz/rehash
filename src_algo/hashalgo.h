@@ -38,7 +38,7 @@
 typedef struct _RH_DATA_INFO
 {
 	const char *pszFileName;
-	unsigned long uDataLen;
+	UINTPREF uDataLen;
 } RH_DATA_INFO;
 
 class CHashAlgorithm // Abstract hash algorithm class
@@ -46,13 +46,13 @@ class CHashAlgorithm // Abstract hash algorithm class
 public:
 	virtual const char *GetName() = 0; // Full name of the algorithm
 	virtual const char *GetShortName() = 0; // Short name of the algorithm
-	virtual unsigned long GetLength() = 0; // Number of bytes of the digest
-	virtual unsigned long GetInternalLength() = 0; // Internal buffer size
+	virtual UINTPREF GetLength() = 0; // Number of bytes of the digest
+	virtual UINTPREF GetInternalLength() = 0; // Internal buffer size
 
 	virtual void Init(RH_DATA_INFO *pInfo) = 0; // Initialize
-	virtual void Update(const unsigned char *pBuf, unsigned long uLen) = 0;
+	virtual void Update(const UWORD8 *pBuf, UINTPREF uLen) = 0;
 	virtual void Final() = 0; // Call this to finish hashing
-	virtual void GetHash(unsigned char *pHash) = 0; // Get the final digest
+	virtual void GetHash(UWORD8 *pHash) = 0; // Get the final digest
 };
 
 void FillAlgorithmList(CHashAlgorithm **pList);

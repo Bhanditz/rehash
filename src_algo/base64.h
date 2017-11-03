@@ -41,8 +41,8 @@ public:
 	CBase64Codec();
 	~CBase64Codec();
 
-	bool Encode(const unsigned char *pIn, unsigned long uInLen, unsigned char *pOut, unsigned long *uOutLen);
-	bool Decode(const unsigned char *pIn, unsigned long uInLen, unsigned char *pOut, unsigned long *uOutLen);
+	bool Encode(const UWORD8 *pIn, UWORD32 uInLen, UWORD8 *pOut, UWORD32 *uOutLen);
+	bool Decode(const UWORD8 *pIn, UWORD32 uInLen, UWORD8 *pOut, UWORD32 *uOutLen);
 };
 
 #endif // ___BASE64_H___

@@ -44,14 +44,14 @@ public:
 	~CTigerHash();
 
 	const char *GetName() { return "Tiger"; }
-	const char *GetShortName() { return "Tiger"; }
-	unsigned long GetLength() { return 24; }
-	unsigned long GetInternalLength() { return 64; }
+	const char *GetShortName() { return "tiger"; }
+	UINTPREF GetLength() { return 24; }
+	UINTPREF GetInternalLength() { return 64; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_final, 24); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_final, 24); }
 
 private:
 	void _Compress();
@@ -60,10 +60,10 @@ private:
 	void _KeySchedule(UWORD64 *x);
 
 	UWORD64 m_state[3], m_length;
-	unsigned long m_curlen;
-	unsigned char m_buf[64];
+	UWORD32 m_curlen;
+	UWORD8 m_buf[64];
 
 	UWORD8 m_final[24];
 };
 
-#endif // ___TIGER_H___
+#endif

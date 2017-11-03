@@ -55,9 +55,9 @@ void CFNV32Hash::Init(RH_DATA_INFO *pInfo)
 	m_fnv32 = FNV32_1_INIT;
 }
 
-void CFNV32Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CFNV32Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i;
+	UINTPREF i;
 
 	for(i = 0; i < uLen; i++)
 	{
@@ -85,9 +85,9 @@ void CFNV64Hash::Init(RH_DATA_INFO *pInfo)
 	m_fnv64 = FNV64_1_INIT;
 }
 
-void CFNV64Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CFNV64Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i;
+	UINTPREF i;
 
 	for(i = 0; i < uLen; i++)
 	{

@@ -47,15 +47,15 @@
 	License is also granted to make and use derivative works provided
 	that such works are identified as "derived from the RSA Data
 	Security, Inc. MD4 Message-Digest Algorithm" in all material
-	mentioning or referencing the derived work.  
+	mentioning or referencing the derived work.
 
 	RSA Data Security, Inc. makes no representations concerning either
 	the merchantability of this software or the suitability of this
 	software for any particular purpose. It is provided "as is"
-	without express or implied warranty of any kind.  
+	without express or implied warranty of any kind.
 
 	These notices must be retained in any copies of any part of this
-	documentation and/or software.  
+	documentation and/or software.
 */
 
 #include "md4.h"
@@ -74,7 +74,7 @@
 #define MD4_S33 11
 #define MD4_S34 15
 
-static const unsigned char MD4_PADDING[64] = {
+static const UWORD8 MD4_PADDING[64] = {
 	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -120,12 +120,12 @@ void CMD4Hash::Init(RH_DATA_INFO *pInfo)
 // MD4 block update operation. Continues an MD4 message-digest
 //     operation, processing another message block, and updating the
 //     context
-void CMD4Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CMD4Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned int i = 0, ix = 0, partLen = 0;
+	UINTPREF i = 0, ix, partLen;
 
 	// Compute number of bytes mod 64
-	ix = (unsigned int)((m_count[0] >> 3) & 0x3F);
+	ix = (UINTPREF)((m_count[0] >> 3) & 0x3F);
 
 	// Update number of bits
 	if((m_count[0] += ((UWORD32)uLen << 3)) < ((UWORD32)uLen << 3))
@@ -155,14 +155,14 @@ void CMD4Hash::Update(const unsigned char *pBuf, unsigned long uLen)
 //     the message digest and zeroizing the context
 void CMD4Hash::Final()
 {
-	unsigned char pBits[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-	unsigned int ix = 0, padLen = 0;
+	UWORD8 pBits[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	UINTPREF ix, padLen;
 
 	// Save number of bits
 	_Encode(pBits, m_count, 8);
 
 	// Pad out to 56 mod 64.
-	ix = (unsigned int)((m_count[0] >> 3) & 0x3f);
+	ix = (UINTPREF)((m_count[0] >> 3) & 0x3f);
 	padLen = (ix < 56) ? (56 - ix) : (120 - ix);
 	Update(MD4_PADDING, padLen);
 
@@ -174,7 +174,7 @@ void CMD4Hash::Final()
 }
 
 // MD4 basic transformation. Transforms state based on block.
-void CMD4Hash::_Transform(UWORD32 *pState, const unsigned char *pBlock)
+void CMD4Hash::_Transform(UWORD32 *pState, const UWORD8 *pBlock)
 {
 	UWORD32 a = pState[0], b = pState[1], c = pState[2], d = pState[3];
 	UWORD32 x[16];
@@ -241,24 +241,24 @@ void CMD4Hash::_Transform(UWORD32 *pState, const unsigned char *pBlock)
 	pState[3] += d;
 }
 
-void CMD4Hash::_Encode(unsigned char *pOutput, const UWORD32 *pInput, unsigned int uLen)
+void CMD4Hash::_Encode(UWORD8 *pOutput, const UWORD32 *pInput, UINTPREF uLen)
 {
-	unsigned int i, j;
+	UINTPREF i, j;
 
-	for (i = 0, j = 0; j < uLen; i++, j += 4)
+	for(i = 0, j = 0; j < uLen; i++, j += 4)
 	{
-		pOutput[j] = (unsigned char)(pInput[i] & 0xFF);
-		pOutput[j+1] = (unsigned char)((pInput[i] >> 8) & 0xFF);
-		pOutput[j+2] = (unsigned char)((pInput[i] >> 16) & 0xFF);
-		pOutput[j+3] = (unsigned char)((pInput[i] >> 24) & 0xFF);
+		pOutput[j] = (UWORD8)(pInput[i] & 0xFF);
+		pOutput[j+1] = (UWORD8)((pInput[i] >> 8) & 0xFF);
+		pOutput[j+2] = (UWORD8)((pInput[i] >> 16) & 0xFF);
+		pOutput[j+3] = (UWORD8)((pInput[i] >> 24) & 0xFF);
 	}
 }
 
-void CMD4Hash::_Decode(UWORD32 *pOutput, const unsigned char *pInput, unsigned int uLen)
+void CMD4Hash::_Decode(UWORD32 *pOutput, const UWORD8 *pInput, UINTPREF uLen)
 {
-	unsigned int i, j;
+	UINTPREF i, j;
 
-	for (i = 0, j = 0; j < uLen; i++, j += 4)
+	for(i = 0, j = 0; j < uLen; i++, j += 4)
 		pOutput[i] = ((UWORD32)pInput[j]) | (((UWORD32)pInput[j+1]) << 8) |
 			(((UWORD32)pInput[j+2]) << 16) | (((UWORD32)pInput[j+3]) << 24);
 }

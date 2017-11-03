@@ -47,15 +47,15 @@
 	License is also granted to make and use derivative works provided
 	that such works are identified as "derived from the RSA Data
 	Security, Inc. MD4 Message-Digest Algorithm" in all material
-	mentioning or referencing the derived work.  
+	mentioning or referencing the derived work.
 
 	RSA Data Security, Inc. makes no representations concerning either
 	the merchantability of this software or the suitability of this
 	software for any particular purpose. It is provided "as is"
-	without express or implied warranty of any kind.  
+	without express or implied warranty of any kind.
 
 	These notices must be retained in any copies of any part of this
-	documentation and/or software.  
+	documentation and/or software.
 */
 
 #ifndef ___MD4_H___
@@ -70,19 +70,19 @@ public:
 	~CMD4Hash();
 
 	const char *GetName() { return "MD4"; }
-	const char *GetShortName() { return "MD4"; }
-	unsigned long GetLength() {	return 16; }
-	unsigned long GetInternalLength() { return 64; }
+	const char *GetShortName() { return "md4"; }
+	UINTPREF GetLength() { return 16; }
+	UINTPREF GetInternalLength() { return 64; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_digest, 16); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_digest, 16); }
 
 private:
-	void _Transform(UWORD32 *pState, const unsigned char *pBlock);
-	void _Encode(unsigned char *pOutput, const UWORD32 *pInput, unsigned int uLen);
-	void _Decode(UWORD32 *pOutput, const unsigned char *pInput, unsigned int uLen);
+	void _Transform(UWORD32 *pState, const UWORD8 *pBlock);
+	void _Encode(UWORD8 *pOutput, const UWORD32 *pInput, UINTPREF uLen);
+	void _Decode(UWORD32 *pOutput, const UWORD8 *pInput, UINTPREF uLen);
 
 	UWORD32 m_state[4];
 	UWORD32 m_count[2];

@@ -607,12 +607,12 @@ void CTigerHash::_KeySchedule(UWORD64 *x)
 	x[5] ^= x[4];
 	x[6] += x[5];
 	x[7] -= x[6] ^ CONST64(0x0123456789ABCDEF);
-}    
+}
 
 void CTigerHash::_Compress()
 {
 	UWORD64 a, b, c, x[8];
-	unsigned long i;
+	UWORD32 i;
 
 	for(i = 0; i < 8; i++)
 	{
@@ -642,9 +642,9 @@ void CTigerHash::Init(RH_DATA_INFO *pInfo)
 	m_length = 0;
 }
 
-void CTigerHash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CTigerHash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long n;
+	UWORD32 n;
 
 	while(uLen > 0)
 	{

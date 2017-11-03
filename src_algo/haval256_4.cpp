@@ -78,12 +78,12 @@
  *      collision-resistant property:
  *             It is computationally infeasible to find two or more
  *             messages that are hashed into the same fingerprint.
- *      
+ *
  *  Reference:
  *       Y. Zheng, J. Pieprzyk and J. Seberry:
  *       ``HAVAL --- a one-way hashing algorithm with variable
  *       length of output'', Advances in Cryptology --- AUSCRYPT'92,
- *       Lecture Notes in Computer Science,  Vol.718, pp.83-104, 
+ *       Lecture Notes in Computer Science,  Vol.718, pp.83-104,
  *       Springer-Verlag, 1993.
  *
  *  Descriptions:
@@ -137,7 +137,7 @@ static const UWORD8 HAVAL_PADDING[128] =
 
 #define HAVAL_F_2(x6, x5, x4, x3, x2, x1, x0) \
 	((x2) & ((x1) & ~(x3) ^ (x4) & (x5) ^ (x6) ^ (x0)) ^ \
-	(x4) & ((x1) ^ (x5)) ^ (x3) & (x5) ^ (x0)) 
+	(x4) & ((x1) ^ (x5)) ^ (x3) & (x5) ^ (x0))
 
 #define HAVAL_F_3(x6, x5, x4, x3, x2, x1, x0) \
 	((x3) & ((x1) & (x2) ^ (x6) ^ (x0)) ^ \
@@ -158,7 +158,7 @@ static const UWORD8 HAVAL_PADDING[128] =
 #elif (HAVAL_PASS == 4)
 #define HAVAL_FPHI_1(x6, x5, x4, x3, x2, x1, x0) \
 	HAVAL_F_1(x2, x6, x1, x4, x5, x3, x0)
-#else 
+#else
 #define HAVAL_FPHI_1(x6, x5, x4, x3, x2, x1, x0) \
 	HAVAL_F_1(x3, x4, x1, x0, x5, x2, x6)
 #endif
@@ -265,7 +265,7 @@ void CHaval256_4::Init(RH_DATA_INFO *pInfo)
 	m_fingerprint[7] = CONST32(0xEC4E6C89);
 }
 
-void CHaval256_4::Update(const unsigned char *pBuf, unsigned long uLen)
+void CHaval256_4::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
 	UWORD32 i, rmd_len, fill_len;
 
@@ -419,6 +419,7 @@ void CHaval256_4::_Compile()
 	HAVAL_FF_2(t5, t4, t3, t2, t1, t0, t7, t6, *(w+15), CONST32(0x0D95748F));
 	HAVAL_FF_2(t4, t3, t2, t1, t0, t7, t6, t5, *(w+13), CONST32(0x728EB658));
 	HAVAL_FF_2(t3, t2, t1, t0, t7, t6, t5, t4, *(w+ 2), CONST32(0x718BCD58));
+
 	HAVAL_FF_2(t2, t1, t0, t7, t6, t5, t4, t3, *(w+25), CONST32(0x82154AEE));
 	HAVAL_FF_2(t1, t0, t7, t6, t5, t4, t3, t2, *(w+31), CONST32(0x7B54A41D));
 	HAVAL_FF_2(t0, t7, t6, t5, t4, t3, t2, t1, *(w+27), CONST32(0xC25A59B5));
@@ -547,80 +548,80 @@ void CHaval256_4::_Tailor()
 
 #if (HAVAL_FPTLEN == 128)
 
-	utemp = (m_fingerprint[7] & CONST32(0x000000FF) | 
-		(m_fingerprint[6] & CONST32(0xFF000000) | 
-		(m_fingerprint[5] & CONST32(0x00FF0000) | 
+	utemp = (m_fingerprint[7] & CONST32(0x000000FF) |
+		(m_fingerprint[6] & CONST32(0xFF000000) |
+		(m_fingerprint[5] & CONST32(0x00FF0000) |
 		(m_fingerprint[4] & CONST32(0x0000FF00));
 	m_fingerprint[0] += ROR32(utemp,  8);
 
-	utemp = (m_fingerprint[7] & CONST32(0x0000FF00) | 
-		(m_fingerprint[6] & CONST32(0x000000FF) | 
-		(m_fingerprint[5] & CONST32(0xFF000000) | 
+	utemp = (m_fingerprint[7] & CONST32(0x0000FF00) |
+		(m_fingerprint[6] & CONST32(0x000000FF) |
+		(m_fingerprint[5] & CONST32(0xFF000000) |
 		(m_fingerprint[4] & CONST32(0x00FF0000));
 	m_fingerprint[1] += ROR32(utemp, 16);
 
-	utemp = (m_fingerprint[7] & CONST32(0x00FF0000) | 
-		(m_fingerprint[6] & CONST32(0x0000FF00) | 
-		(m_fingerprint[5] & CONST32(0x000000FF) | 
+	utemp = (m_fingerprint[7] & CONST32(0x00FF0000) |
+		(m_fingerprint[6] & CONST32(0x0000FF00) |
+		(m_fingerprint[5] & CONST32(0x000000FF) |
 		(m_fingerprint[4] & CONST32(0xFF000000));
 	m_fingerprint[2] += ROR32(utemp, 24);
 
-	utemp = (m_fingerprint[7] & CONST32(0xFF000000) | 
-		(m_fingerprint[6] & CONST32(0x00FF0000) | 
-		(m_fingerprint[5] & CONST32(0x0000FF00) | 
+	utemp = (m_fingerprint[7] & CONST32(0xFF000000) |
+		(m_fingerprint[6] & CONST32(0x00FF0000) |
+		(m_fingerprint[5] & CONST32(0x0000FF00) |
 		(m_fingerprint[4] & CONST32(0x000000FF));
 	m_fingerprint[3] += utemp;
 
 #elif (HAVAL_FPTLEN == 160)
 
-	utemp = (m_fingerprint[7] &  (UWORD32)0x3F) | 
-		(m_fingerprint[6] & ((UWORD32)0x7F << 25)) |  
+	utemp = (m_fingerprint[7] &  (UWORD32)0x3F) |
+		(m_fingerprint[6] & ((UWORD32)0x7F << 25)) |
 		(m_fingerprint[5] & ((UWORD32)0x3F << 19));
 	m_fingerprint[0] += ROR32(utemp, 19);
 
-	utemp = (m_fingerprint[7] & ((UWORD32)0x3F <<  6)) | 
-		(m_fingerprint[6] &  (UWORD32)0x3F) |  
+	utemp = (m_fingerprint[7] & ((UWORD32)0x3F <<  6)) |
+		(m_fingerprint[6] &  (UWORD32)0x3F) |
 		(m_fingerprint[5] & ((UWORD32)0x7F << 25));
 	m_fingerprint[1] += ROR32(utemp, 25);
 
-	utemp = (m_fingerprint[7] & ((UWORD32)0x7F << 12)) | 
-		(m_fingerprint[6] & ((UWORD32)0x3F <<  6)) |  
+	utemp = (m_fingerprint[7] & ((UWORD32)0x7F << 12)) |
+		(m_fingerprint[6] & ((UWORD32)0x3F <<  6)) |
 		(m_fingerprint[5] &  (UWORD32)0x3F);
 	m_fingerprint[2] += utemp;
 
-	utemp = (m_fingerprint[7] & ((UWORD32)0x3F << 19)) | 
-		(m_fingerprint[6] & ((UWORD32)0x7F << 12)) |  
+	utemp = (m_fingerprint[7] & ((UWORD32)0x3F << 19)) |
+		(m_fingerprint[6] & ((UWORD32)0x7F << 12)) |
 		(m_fingerprint[5] & ((UWORD32)0x3F <<  6));
-	m_fingerprint[3] += utemp >> 6; 
+	m_fingerprint[3] += utemp >> 6;
 
-	utemp = (m_fingerprint[7] & ((UWORD32)0x7F << 25)) | 
-		(m_fingerprint[6] & ((UWORD32)0x3F << 19)) |  
+	utemp = (m_fingerprint[7] & ((UWORD32)0x7F << 25)) |
+		(m_fingerprint[6] & ((UWORD32)0x3F << 19)) |
 		(m_fingerprint[5] & ((UWORD32)0x7F << 12));
 	m_fingerprint[4] += utemp >> 12;
 
 #elif (HAVAL_FPTLEN == 192)
 
-	utemp = (m_fingerprint[7] &  (UWORD32)0x1F) | 
+	utemp = (m_fingerprint[7] &  (UWORD32)0x1F) |
 		(m_fingerprint[6] & ((UWORD32)0x3F << 26));
 	m_fingerprint[0] += ROR32(utemp, 26);
 
-	utemp = (m_fingerprint[7] & ((UWORD32)0x1F <<  5)) | 
+	utemp = (m_fingerprint[7] & ((UWORD32)0x1F <<  5)) |
 		(m_fingerprint[6] &  (UWORD32)0x1F);
 	m_fingerprint[1] += utemp;
 
-	utemp = (m_fingerprint[7] & ((UWORD32)0x3F << 10)) | 
+	utemp = (m_fingerprint[7] & ((UWORD32)0x3F << 10)) |
 		(m_fingerprint[6] & ((UWORD32)0x1F <<  5));
 	m_fingerprint[2] += utemp >> 5;
 
-	utemp = (m_fingerprint[7] & ((UWORD32)0x1F << 16)) | 
+	utemp = (m_fingerprint[7] & ((UWORD32)0x1F << 16)) |
 		(m_fingerprint[6] & ((UWORD32)0x3F << 10));
 	m_fingerprint[3] += utemp >> 10;
 
-	utemp = (m_fingerprint[7] & ((UWORD32)0x1F << 21)) | 
+	utemp = (m_fingerprint[7] & ((UWORD32)0x1F << 21)) |
 		(m_fingerprint[6] & ((UWORD32)0x1F << 16));
 	m_fingerprint[4] += utemp >> 16;
 
-	utemp = (m_fingerprint[7] & ((UWORD32)0x3F << 26)) | 
+	utemp = (m_fingerprint[7] & ((UWORD32)0x3F << 26)) |
 		(m_fingerprint[6] & ((UWORD32)0x1F << 21));
 	m_fingerprint[5] += utemp >> 21;
 
@@ -641,4 +642,4 @@ void CHaval256_4::_Tailor()
 #endif
 }
 
-#endif // HAVAL_COMMON_SOURCE
+#endif

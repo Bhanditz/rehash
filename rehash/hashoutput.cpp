@@ -100,10 +100,12 @@ void CHashOutput::SetOutputStyleN(int nStyle)
 
 void CHashOutput::InitOutput(void *pManager)
 {
-	unsigned long i = 0;
+	UINTPREF i = 0;
 	CHashManager *pMgr = (CHashManager *)pManager;
 
 	RH_ASSERT(pMgr != NULL);
+
+	m_pNewLine = rhGetNewLine();
 
 	m_nMaxHashName = 0;
 	while(1)
@@ -236,65 +238,83 @@ void CHashOutput::NewDataSource(const char *pFileDesc, bool bHMAC, char *pHMACKe
 	switch (m_nOutputStyle)
 	{
 	case HASHOUTPUT_TEXT:
-		printf(pFileDesc);
-		rhNewLine();
+		strcpy(m_szBuffer, "<");
+		rhstrcat(m_szBuffer, pFileDesc, RH_MAX_OUTPUT_BUFFER);
+		rhstrcat(m_szBuffer, ">", RH_MAX_OUTPUT_BUFFER);
+		rhstrcat(m_szBuffer, m_pNewLine, RH_MAX_OUTPUT_BUFFER);
 
 		if(bHMAC == true)
 		{
 			RH_ASSERT(pHMACKey != NULL);
 
-			printf("HMAC hashes using key: ");
-			printf(pHMACKey);
-			rhNewLine();
+			rhstrcat(m_szBuffer, "HMAC hashes using key: ", RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, pHMACKey, RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, m_pNewLine, RH_MAX_OUTPUT_BUFFER);
 		}
+
+		printf(m_szBuffer);
 		break;
 
 	case HASHOUTPUT_HTML:
-		printf("<table class=\"hashtable\" cellspacing=\"1px\"><tr>");
-		printf("<td class=\"hashofcell\">File</td><td class=\"filecell\">");
-		printf(pFileDesc);
-		printf("</td></tr>");
+		strcpy(m_szBuffer, "<table class=\"hashtable\" cellspacing=\"1px\"><tr>");
+		rhstrcat(m_szBuffer, "<td class=\"hashofcell\">File</td><td class=\"filecell\">", RH_MAX_OUTPUT_BUFFER);
+		rhstrcat(m_szBuffer, pFileDesc, RH_MAX_OUTPUT_BUFFER);
+		rhstrcat(m_szBuffer, "</td></tr>", RH_MAX_OUTPUT_BUFFER);
 
 		if(bHMAC == true)
 		{
-			printf("<tr><td class=\"hashofcell\">HMAC key</td><td class=\"filecell\">");
-			printf(pHMACKey);
-			printf("</td></tr>");
-			rhNewLine();
+			rhstrcat(m_szBuffer, "<tr><td class=\"hashofcell\">HMAC key</td><td class=\"filecell\">", RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, pHMACKey, RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, "</td></tr>", RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, m_pNewLine, RH_MAX_OUTPUT_BUFFER);
 		}
 
+		printf(m_szBuffer);
 		break;
 
 	case HASHOUTPUT_XML:
-		printf("<file>"); rhNewLine(); printf("<name>");
-		printf(pFileDesc); printf("</name>"); rhNewLine();
+		strcpy(m_szBuffer, "<file>");
+		strcat(m_szBuffer, m_pNewLine);
+		strcat(m_szBuffer, "<name>");
+		rhstrcat(m_szBuffer, pFileDesc, RH_MAX_OUTPUT_BUFFER);
+		rhstrcat(m_szBuffer, "</name>", RH_MAX_OUTPUT_BUFFER);
+		rhstrcat(m_szBuffer, m_pNewLine, RH_MAX_OUTPUT_BUFFER);
 
 		if(bHMAC == true)
 		{
-			printf("<hmac>1</hmac>"); rhNewLine();
-			printf("<hkey>"); printf(pHMACKey); printf("</hkey>"); rhNewLine();
+			rhstrcat(m_szBuffer, "<hmac>1</hmac>", RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, m_pNewLine, RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, "<hkey>", RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, pHMACKey, RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, "</hkey>", RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, m_pNewLine, RH_MAX_OUTPUT_BUFFER);
 		}
 		else
 		{
-			printf("<hmac>0</hmac>"); rhNewLine();
+			rhstrcat(m_szBuffer, "<hmac>0</hmac>", RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, m_pNewLine, RH_MAX_OUTPUT_BUFFER);
 		}
 
+		printf(m_szBuffer);
 		break;
 
 	case HASHOUTPUT_CSV:
-		printf("\"");
-		printf(pFileDesc);
-		printf("\",\"");
+		strcpy(m_szBuffer, "\"");
+		rhstrcat(m_szBuffer, pFileDesc, RH_MAX_OUTPUT_BUFFER);
+		rhstrcat(m_szBuffer, "\",\"", RH_MAX_OUTPUT_BUFFER);
+
 		if(bHMAC == true)
 		{
-			printf("1\",\"");
-			printf(pHMACKey);
-			printf("\"");
+			rhstrcat(m_szBuffer, "1\",\"", RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, pHMACKey, RH_MAX_OUTPUT_BUFFER);
+			rhstrcat(m_szBuffer, "\"", RH_MAX_OUTPUT_BUFFER);
 		}
 		else
 		{
-			printf("0\",\"\"");
+			rhstrcat(m_szBuffer, "0\",\"\"", RH_MAX_OUTPUT_BUFFER);
 		}
+
+		printf(m_szBuffer);
 		break;
 
 	case HASHOUTPUT_NONE:
@@ -333,9 +353,9 @@ void CHashOutput::CloseDataSource()
 	}
 }
 
-void CHashOutput::Output(const char *pHashName, unsigned char *pHash, unsigned long uLen)
+void CHashOutput::Output(const char *pHashName, UWORD8 *pHash, UINTPREF uLen)
 {
-	unsigned int i;
+	UINTPREF i;
 
 	RH_ASSERT(pHashName != NULL);
 	RH_ASSERT(pHash != NULL);
@@ -345,10 +365,11 @@ void CHashOutput::Output(const char *pHashName, unsigned char *pHash, unsigned l
 	switch (m_nOutputStyle)
 	{
 	case HASHOUTPUT_TEXT:
-		printf(pHashName);
+		strcpy(m_szBuffer, pHashName);
 		i = m_nMaxHashName - strlen(pHashName);
-		while(i != 0) { printf(" "); i--; }
-		printf(" : ");
+		while(i != 0) { strcat(m_szBuffer, " "); i--; }
+		strcat(m_szBuffer, " : ");
+		printf(m_szBuffer);
 
 		_OutputHashBytes(pHash, uLen);
 
@@ -356,10 +377,12 @@ void CHashOutput::Output(const char *pHashName, unsigned char *pHash, unsigned l
 		break;
 
 	case HASHOUTPUT_HTML:
-		printf("<tr><td class=\"hashentrycell\">");
-		printf(pHashName);
-		printf("</td>"); rhNewLine();
-		printf("<td class=\"hashcell\">");
+		strcpy(m_szBuffer, "<tr><td class=\"hashentrycell\">");
+		strcat(m_szBuffer, pHashName);
+		rhstrcat(m_szBuffer, "</td>", RH_MAX_OUTPUT_BUFFER);
+		rhstrcat(m_szBuffer, m_pNewLine, RH_MAX_OUTPUT_BUFFER);
+		rhstrcat(m_szBuffer, "<td class=\"hashcell\">", RH_MAX_OUTPUT_BUFFER);
+		printf(m_szBuffer);
 
 		_OutputHashBytes(pHash, uLen);
 
@@ -391,10 +414,10 @@ void CHashOutput::Output(const char *pHashName, unsigned char *pHash, unsigned l
 	}
 }
 
-void CHashOutput::_OutputHashBytes(unsigned char *pHash, unsigned long uLen)
+void CHashOutput::_OutputHashBytes(UWORD8 *pHash, UINTPREF uLen)
 {
-	unsigned long i;
-	int j = 0;
+	UINTPREF i;
+	INTPREF j = 0;
 
 	RH_ASSERT(pHash != NULL);
 	RH_ASSERT(uLen >= 1);
@@ -402,27 +425,31 @@ void CHashOutput::_OutputHashBytes(unsigned char *pHash, unsigned long uLen)
 	if(m_bBase64 == true)
 	{
 		CBase64Codec baseCoder;
+		UWORD32 i32;
 	
 		m_szHashBuffer[0] = 0;
 
-		i = RH_MAX_HASH_STRING;
-		baseCoder.Encode(pHash, uLen, (unsigned char *)m_szHashBuffer, &i);
+		i32 = RH_MAX_HASH_STRING;
+		baseCoder.Encode(pHash, uLen, (UWORD8 *)m_szHashBuffer, &i32);
 
 		printf(m_szHashBuffer);
 
 		return;
 	}
 
+	m_szBuffer[0] = 0;
+
 	for(i = 0; i < uLen; i++)
 	{
-		printf(m_szCharCode, pHash[i]);
+		sprintf(m_szByteBuffer, m_szCharCode, pHash[i]);
+		strcat(m_szBuffer, m_szByteBuffer);
 
 		j++;
 		if(j == m_nCombineWords)
 		{
 			j = 0;
 
-			if(i != (uLen - 1)) printf(" ");
+			if(i != (uLen - 1)) strcat(m_szBuffer, " ");
 		}
 	}
 
@@ -430,9 +457,11 @@ void CHashOutput::_OutputHashBytes(unsigned char *pHash, unsigned long uLen)
 	{
 		while(1)
 		{
-			printf("00");
+			strcat(m_szBuffer, "00");
 			j++;
 			if(j == m_nCombineWords) break;
 		}
 	}
+
+	printf(m_szBuffer);
 }

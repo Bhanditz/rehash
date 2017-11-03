@@ -43,13 +43,13 @@ public:
 
 	const char *GetName() { return "GHash32.3"; }
 	const char *GetShortName() { return "ghash3"; }
-	unsigned long GetLength() {	return 4; }
-	unsigned long GetInternalLength() { return 4; }
+	UINTPREF GetLength() { return 4; }
+	UINTPREF GetInternalLength() { return 4; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE32H(m_ghash32, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE32H(m_ghash32, pHash); }
 
 private:
 	UWORD32 m_ghash32;
@@ -63,13 +63,13 @@ public:
 
 	const char *GetName() { return "GHash32.5"; }
 	const char *GetShortName() { return "ghash5"; }
-	unsigned long GetLength() {	return 4; }
-	unsigned long GetInternalLength() { return 4; }
+	UINTPREF GetLength() { return 4; }
+	UINTPREF GetInternalLength() { return 4; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE32H(m_ghash32, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE32H(m_ghash32, pHash); }
 
 private:
 	UWORD32 m_ghash32;

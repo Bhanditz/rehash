@@ -42,27 +42,27 @@
 
  LICENSE TERMS
 
- The free distribution and use of this software in both source and binary 
+ The free distribution and use of this software in both source and binary
  form is allowed (with or without changes) provided that:
 
-   1. distributions of this source code include the above copyright 
+   1. distributions of this source code include the above copyright
       notice, this list of conditions and the following disclaimer;
 
    2. distributions in binary form include the above copyright
       notice, this list of conditions and the following disclaimer
       in the documentation and/or other associated materials;
 
-   3. the copyright holder's name is not used to endorse products 
-      built using this software without specific written permission. 
+   3. the copyright holder's name is not used to endorse products
+      built using this software without specific written permission.
 
  ALTERNATIVELY, provided that this notice is retained in full, this product
  may be distributed under the terms of the GNU General Public License (GPL),
  in which case the provisions of the GPL apply INSTEAD OF those given above.
- 
+
  DISCLAIMER
 
  This software is provided 'as is' with no explicit or implied warranties
- in respect of its properties, including, but not limited to, correctness 
+ in respect of its properties, including, but not limited to, correctness
  and/or fitness for purpose.
  ---------------------------------------------------------------------------
  Issue Date: 26/08/2003
@@ -122,7 +122,7 @@ void CSHA1Hash::_Compile()
 	d = m_hash[3]; e = m_hash[4];
 
 	for(i = 0; i < 20; i++)
-		SHA_RND(SHA1_CH, 0x5a827999);    
+		SHA_RND(SHA1_CH, 0x5a827999);
 
 	for(i = 20; i < 40; i++)
 		SHA_RND(SHA1_PARITY, 0x6ed9eba1);
@@ -149,23 +149,23 @@ void CSHA1Hash::Init(RH_DATA_INFO *pInfo)
 	m_hash[4] = 0xc3d2e1f0;
 }
 
-void CSHA1Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CSHA1Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
 	UWORD32 pos = (UWORD32)(m_count[0] & SHA1_MASK);
 	UWORD32 space = SHA1_BLOCK_SIZE - pos;
-	const unsigned char *sp = pBuf;
+	const UWORD8 *sp = pBuf;
 
 	if((m_count[0] += uLen) < uLen)
 		++(m_count[1]);
 
 	while(uLen >= space)
 	{
-		memcpy(((unsigned char *)m_wbuf) + pos, sp, space);
+		memcpy(((UWORD8 *)m_wbuf) + pos, sp, space);
 		sp += space; uLen -= space; space = SHA1_BLOCK_SIZE; pos = 0;
 		_Compile();
 	}
 
-	memcpy(((unsigned char *)m_wbuf) + pos, sp, uLen);
+	memcpy(((UWORD8 *)m_wbuf) + pos, sp, uLen);
 }
 
 #if defined(RH_LITTLE_ENDIAN)

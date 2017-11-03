@@ -51,23 +51,23 @@ public:
 
 	void SetHashAlgorithm(CHashAlgorithm *pHashAlgorithm);
 
-	void SetKey(unsigned char *pKey, unsigned long uKeySize);
+	void SetKey(UWORD8 *pKey, UINTPREF uKeySize);
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash)
+	void GetHash(UWORD8 *pHash)
 	{
 		memcpy(pHash, m_final, m_pAlgo->GetLength());
 	}
 
 private:
 	CHashAlgorithm *m_pAlgo;
-	unsigned long m_lenBlock;
+	UINTPREF m_lenBlock;
 
-	unsigned char m_pKey[HMAC_MAX_BLOCK];
-	unsigned long m_uKeySize;
+	UWORD8 m_pKey[HMAC_MAX_BLOCK];
+	UINTPREF m_uKeySize;
 
-	unsigned char m_final[HMAC_MAX_BLOCK];
+	UWORD8 m_final[HMAC_MAX_BLOCK];
 };
 
 void FillHMACList(CHMAC **pList, CHashAlgorithm **pAlgorithms);

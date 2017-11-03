@@ -36,7 +36,7 @@
 
 CHashManager::CHashManager()
 {
-	int i;
+	INTPREF i;
 
 	// Load all algorithms
 	FillAlgorithmList(m_pAlgorithms);
@@ -51,6 +51,7 @@ CHashManager::CHashManager()
 
 	m_bRecursiveScanning = true;
 	m_bTimings = true;
+	m_bShortNames = true;
 	m_bHMAC = false;
 
 	m_output.SetOutputStyleN(HASHOUTPUT_TEXT);
@@ -58,7 +59,7 @@ CHashManager::CHashManager()
 
 CHashManager::~CHashManager()
 {
-	int i = 0;
+	INTPREF i = 0;
 
 	while(1)
 	{
@@ -76,9 +77,9 @@ CHashManager::~CHashManager()
 	}
 }
 
-int CHashManager::FindAlgorithm(const char *pszName, bool bShortName)
+INTPREF CHashManager::FindAlgorithm(const char *pszName, bool bShortName)
 {
-	int i = 0;
+	INTPREF i = 0;
 
 	if(bShortName)
 	{
@@ -109,7 +110,7 @@ int CHashManager::FindAlgorithm(const char *pszName, bool bShortName)
 	return -1;
 }
 
-bool CHashManager::SelectAlgorithm(int nAlgorithm, bool bSelect)
+bool CHashManager::SelectAlgorithm(INTPREF nAlgorithm, bool bSelect)
 {
 	if((nAlgorithm < 0) || (nAlgorithm >= RH_MAX_ALGORITHMS))
 		return false;
@@ -122,7 +123,7 @@ bool CHashManager::SelectAlgorithm(int nAlgorithm, bool bSelect)
 
 void CHashManager::SelectAllAlgorithms(bool bSelect)
 {
-	unsigned int i = 0;
+	UINTPREF i = 0;
 
 	while(1)
 	{
@@ -140,9 +141,9 @@ void CHashManager::SetOutputStyle(const char *pszOutputSchemeName)
 	m_output.SetOutputStyleA(pszOutputSchemeName);
 }
 
-void CHashManager::SetHMAC(bool bHMAC, unsigned char *pKey, unsigned long uKeySize)
+void CHashManager::SetHMAC(bool bHMAC, UWORD8 *pKey, UINTPREF uKeySize)
 {
-	unsigned int i = 0;
+	UINTPREF i = 0;
 
 	RH_ASSERT((bHMAC == true) || (bHMAC == false)); // Only accept real bool
 
@@ -166,11 +167,12 @@ void CHashManager::SetHMAC(bool bHMAC, unsigned char *pKey, unsigned long uKeySi
 	rhstrcpy(m_szHMACKey, (const char *)pKey, RH_MAX_STD_BUFFER);
 }
 
-void CHashManager::SetOption(int nOption, bool bFlag)
+void CHashManager::SetOption(INTPREF nOption, bool bFlag)
 {
 	RH_ASSERT((nOption > HM_NULL) && (nOption < HM_LAST));
 
 	if(nOption == HM_RECURSIVE) m_bRecursiveScanning = bFlag;
+	if(nOption == HM_SHORTNAMES) m_bShortNames = bFlag;
 }
 
 void CHashManager::PrepareHashing()
@@ -302,13 +304,15 @@ bool CHashManager::HashPath(const char *pszPath, const char *pszMask)
 #endif
 }
 
-int CHashManager::HashFile(const char *pszFile)
+INTPREF CHashManager::HashFile(const char *pszFile)
 {
 	FILE *fp;
-	unsigned long uFileSize, uRead;
-	unsigned char pBuf[HM_BUFFER_SIZE];
-	int nAlgorithm;
+	UINTPREF uFileSize, uRead;
+	UWORD8 pBuf[HM_BUFFER_SIZE];
+	INTPREF nAlgorithm;
 	RH_DATA_INFO rhDataInfo;
+
+	RH_ASSERT(HM_BUFFER_SIZE >= RH_MAX_PATH);
 
 	RH_ASSERT(pszFile != NULL);
 	if(pszFile == NULL) return RH_NULLPOINTER;
@@ -367,7 +371,16 @@ int CHashManager::HashFile(const char *pszFile)
 
 	fclose(fp);
 
-	m_output.NewDataSource(pszFile, m_bHMAC, m_szHMACKey);
+	if(m_bShortNames == true)
+	{
+		rhstrcpy((char *)pBuf, pszFile, HM_BUFFER_SIZE);
+		fileonly((char *)pBuf);
+		m_output.NewDataSource((char *)pBuf, m_bHMAC, m_szHMACKey);
+	}
+	else
+	{
+		m_output.NewDataSource(pszFile, m_bHMAC, m_szHMACKey);
+	}
 
 	CHashAlgorithm *pAlgo;
 	CHMAC *pHMAC;

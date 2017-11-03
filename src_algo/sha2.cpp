@@ -42,37 +42,37 @@
 
  LICENSE TERMS
 
- The free distribution and use of this software in both source and binary 
+ The free distribution and use of this software in both source and binary
  form is allowed (with or without changes) provided that:
 
-   1. distributions of this source code include the above copyright 
+   1. distributions of this source code include the above copyright
       notice, this list of conditions and the following disclaimer;
 
    2. distributions in binary form include the above copyright
       notice, this list of conditions and the following disclaimer
       in the documentation and/or other associated materials;
 
-   3. the copyright holder's name is not used to endorse products 
-      built using this software without specific written permission. 
+   3. the copyright holder's name is not used to endorse products
+      built using this software without specific written permission.
 
  ALTERNATIVELY, provided that this notice is retained in full, this product
  may be distributed under the terms of the GNU General Public License (GPL),
  in which case the provisions of the GPL apply INSTEAD OF those given above.
- 
+
  DISCLAIMER
 
  This software is provided 'as is' with no explicit or implied warranties
- in respect of its properties, including, but not limited to, correctness 
+ in respect of its properties, including, but not limited to, correctness
  and/or fitness for purpose.
  ---------------------------------------------------------------------------
  Issue Date: 26/08/2003
 
  This is a byte oriented version of SHA2 that operates on arrays of bytes
  stored in memory. This code implements sha256, sha384 and sha512 but the
- latter two functions rely on efficient 64-bit integer operations that 
+ latter two functions rely on efficient 64-bit integer operations that
  may not be very efficient on 32-bit machines
 
- My thanks to Erik Andersen <andersen@codepoet.org> for testing this code 
+ My thanks to Erik Andersen <andersen@codepoet.org> for testing this code
  on big-endian systems and for his assistance with corrections
 */
 
@@ -89,8 +89,8 @@
 #define SHA512_MASK (SHA512_BLOCK_SIZE - 1)
 
 #if defined(RH_LITTLE_ENDIAN)
-#define BSW_32(p,n) { int _i = (n); while(_i--) p[_i] = BSWAP_32(p[_i]); }
-#define BSW_64(p,n) { int _i = (n); while(_i--) p[_i] = BSWAP_64(p[_i]); }
+#define BSW_32(p,n) { INTPREF _i = (n); while(_i--) p[_i] = BSWAP_32(p[_i]); }
+#define BSW_64(p,n) { INTPREF _i = (n); while(_i--) p[_i] = BSWAP_64(p[_i]); }
 #else
 #define BSW_32(p,n)
 #define BSW_64(p,n)
@@ -133,7 +133,7 @@ static const UWORD32 SHA2_I256[8] =
 	0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
 };
 
-static const UWORD64 SHA2_I384[80] = 
+static const UWORD64 SHA2_I384[80] =
 {
 	0xcbbb9d5dc1059ed8, 0x629a292a367cd507,
 	0x9159015a3070dd17, 0x152fecd8f70e5939,
@@ -141,7 +141,7 @@ static const UWORD64 SHA2_I384[80] =
 	0xdb0c2e0d64f98fa7, 0x47b5481dbefa4fa4
 };
 
-static const UWORD64 SHA2_I512[80] = 
+static const UWORD64 SHA2_I512[80] =
 {
 	0x6a09e667f3bcc908, 0xbb67ae8584caa73b,
 	0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
@@ -169,9 +169,9 @@ static const UWORD32 SHA2_K256[64] =
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static const UWORD64 SHA2_K512[80] = 
+static const UWORD64 SHA2_K512[80] =
 {
-	0x428a2f98d728ae22, 0x7137449123ef65cd, 
+	0x428a2f98d728ae22, 0x7137449123ef65cd,
 	0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
 	0x3956c25bf348b538, 0x59f111f1b605d019,
 	0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
@@ -349,64 +349,64 @@ void CSHA512Hash::_Compile()
 	m_hash[4] += v[4]; m_hash[5] += v[5]; m_hash[6] += v[6]; m_hash[7] += v[7];
 }
 
-void CSHA256Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CSHA256Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
 	UWORD32 pos = (UWORD32)(m_count[0] & SHA256_MASK);
 	UWORD32 space = SHA256_BLOCK_SIZE - pos;
-	const unsigned char *sp = pBuf;
+	const UWORD8 *sp = pBuf;
 
 	if((m_count[0] += uLen) < uLen)
 		++(m_count[1]);
 
 	while(uLen >= space)
 	{
-		memcpy(((unsigned char *)m_wbuf) + pos, sp, space);
-		sp += space; uLen -= space; space = SHA256_BLOCK_SIZE; pos = 0; 
+		memcpy(((UWORD8 *)m_wbuf) + pos, sp, space);
+		sp += space; uLen -= space; space = SHA256_BLOCK_SIZE; pos = 0;
 		BSW_32(m_wbuf, SHA256_BLOCK_SIZE >> 2)
 		_Compile();
 	}
 
-	memcpy(((unsigned char *)m_wbuf) + pos, sp, uLen);
+	memcpy(((UWORD8 *)m_wbuf) + pos, sp, uLen);
 }
 
-void CSHA384Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CSHA384Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
 	UWORD32 pos = (UWORD32)(m_count[0] & SHA512_MASK);
 	UWORD32 space = SHA512_BLOCK_SIZE - pos;
-	const unsigned char *sp = pBuf;
+	const UWORD8 *sp = pBuf;
 
 	if((m_count[0] += uLen) < uLen)
 		++(m_count[1]);
 
 	while(uLen >= space)
 	{
-		memcpy(((unsigned char *)m_wbuf) + pos, sp, space);
-		sp += space; uLen -= space; space = SHA512_BLOCK_SIZE; pos = 0; 
-		BSW_64(m_wbuf, SHA512_BLOCK_SIZE >> 3);        
+		memcpy(((UWORD8 *)m_wbuf) + pos, sp, space);
+		sp += space; uLen -= space; space = SHA512_BLOCK_SIZE; pos = 0;
+		BSW_64(m_wbuf, SHA512_BLOCK_SIZE >> 3);
 		_Compile();
 	}
 
-	memcpy(((unsigned char *)m_wbuf) + pos, sp, uLen);
+	memcpy(((UWORD8 *)m_wbuf) + pos, sp, uLen);
 }
 
-void CSHA512Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CSHA512Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
 	UWORD32 pos = (UWORD32)(m_count[0] & SHA512_MASK);
 	UWORD32 space = SHA512_BLOCK_SIZE - pos;
-	const unsigned char *sp = pBuf;
+	const UWORD8 *sp = pBuf;
 
 	if((m_count[0] += uLen) < uLen)
 		++(m_count[1]);
 
 	while(uLen >= space)
 	{
-		memcpy(((unsigned char *)m_wbuf) + pos, sp, space);
-		sp += space; uLen -= space; space = SHA512_BLOCK_SIZE; pos = 0; 
-		BSW_64(m_wbuf, SHA512_BLOCK_SIZE >> 3);        
+		memcpy(((UWORD8 *)m_wbuf) + pos, sp, space);
+		sp += space; uLen -= space; space = SHA512_BLOCK_SIZE; pos = 0;
+		BSW_64(m_wbuf, SHA512_BLOCK_SIZE >> 3);
 		_Compile();
 	}
 
-	memcpy(((unsigned char *)m_wbuf) + pos, sp, uLen);
+	memcpy(((UWORD8 *)m_wbuf) + pos, sp, uLen);
 }
 
 void CSHA256Hash::Final()
@@ -435,7 +435,7 @@ void CSHA256Hash::Final()
 	_Compile();
 
 	for(i = 0; i < SHA256_DIGEST_SIZE; i++)
-		m_final[i] = (unsigned char)(m_hash[i >> 2] >> (8 * (~i & 3)));
+		m_final[i] = (UWORD8)(m_hash[i >> 2] >> (8 * (~i & 3)));
 }
 
 void CSHA384Hash::Final()

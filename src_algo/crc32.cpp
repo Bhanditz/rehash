@@ -115,9 +115,9 @@ void CCRC32Hash::Init(RH_DATA_INFO *pInfo)
 	m_crc32 = 0xFFFFFFFF;
 }
 
-void CCRC32Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CCRC32Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i;
+	UINTPREF i;
 
 	for(i = 0; i < uLen; i++)
 		m_crc32 = (m_crc32 >> 8) ^ g_pCRC32Tab[pBuf[i] ^ (m_crc32 & 0xFF)];

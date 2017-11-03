@@ -1,0 +1,24 @@
+
+	REHASH CHANGELOG
+
+* means change, bugfix or just a plain note
++ means addition
+
+==============================================================================
+Version 0.2 - 2003-10-18
++ Added check if filename pattern is valid
+* Safer definitions for UWORDX
++ Added variable types check to the selftest routine
++ Added possibility to output filenames only instead of full paths
+* Filenames in text output are now enclosed by <>
+* Fixed all system-dependent variable types (like int and long) by using
+  system-independent types (like UWORD32 and UWORD64)
++ Introduced UINTPREF and INTPREF types which represent the fastest integers
+  (for example for a 64-bit compiler INTPREF will be a 64-bit signed integer)
+* Renamed some algorithms and short names to more convenient names
+* Faster output (the output is buffered in a string and then printf'ed once
+  in the hash output routines)
+
+==============================================================================
+Version 0.1 - 2003-10-03
+* First experimental public release

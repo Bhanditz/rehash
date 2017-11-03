@@ -43,14 +43,14 @@ CHashBenchmark::~CHashBenchmark()
 void CHashBenchmark::RunBenchmark()
 {
 	CHashAlgorithm *pAlgorithms[RH_MAX_ALGORITHMS];
-	unsigned int i;
+	UINTPREF i;
 	CHashAlgorithm *pAlgo;
 	RH_DATA_INFO rhInfo;
-	unsigned char pBuf[HBENCH_BUFFER_SIZE];
+	UWORD8 pBuf[HBENCH_BUFFER_SIZE];
 	clock_t tStart, tCur;
-	unsigned long uClicks;
-	unsigned long uLoops;
-	unsigned long uUnit;
+	UINTPREF uClicks;
+	UINTPREF uLoops;
+	UINTPREF uUnit;
 
 	RH_ASSERT(pAlgorithms != NULL);
 	RH_ASSERT(pBuf != NULL);
@@ -67,7 +67,7 @@ void CHashBenchmark::RunBenchmark()
 
 	// Fill the benchmark buffer with something
 	for(i = 0; i < HBENCH_BUFFER_SIZE; i++)
-		pBuf[i] = (unsigned char)(((i << 3) % 256) + i);
+		pBuf[i] = (UWORD8)(((i << 3) % 256) + i);
 
 	i = 0;
 	while(1)
@@ -87,7 +87,7 @@ void CHashBenchmark::RunBenchmark()
 			uLoops++;
 
 			tCur = clock();
-			uClicks = (unsigned long)((tCur - tStart) / CLOCKS_PER_SEC);
+			uClicks = (UWORD32)((tCur - tStart) / CLOCKS_PER_SEC);
 			if(uClicks >= 2) break; // Test each algorithm for 2 seconds
 		}
 		pAlgo->Final();

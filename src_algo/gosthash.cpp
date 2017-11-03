@@ -34,10 +34,10 @@
 
 static bool g_bTablesInitialized = false;
 
-static unsigned long g_pSBox1[256];
-static unsigned long g_pSBox2[256];
-static unsigned long g_pSBox3[256];
-static unsigned long g_pSBox4[256];
+static UWORD32 g_pSBox1[256];
+static UWORD32 g_pSBox2[256];
+static UWORD32 g_pSBox3[256];
+static UWORD32 g_pSBox4[256];
 
 #define GOST_ENCRYPT_ROUND(k1, k2) \
 	t = (k1) + r; \
@@ -70,10 +70,10 @@ static unsigned long g_pSBox4[256];
 
 void _gostMakeTables()
 {
-	int a, b, i;
-	unsigned long ax, bx, cx, dx;
+	INTPREF a, b, i;
+	UWORD32 ax, bx, cx, dx;
 
-	const unsigned long uStdSBox[8][16] = // 4-bit SBox
+	const UWORD32 uStdSBox[8][16] = // 4-bit SBox
 	{
 		{  4, 10,  9,  2, 13,  8,  0, 14,  6, 11,  1, 12,  7, 15,  5,  3 },
 		{ 14, 11,  4, 12,  6, 13, 15, 10,  2,  3,  8,  1,  0,  7,  5,  9 },
@@ -88,17 +88,17 @@ void _gostMakeTables()
 	i = 0;
 	for(a = 0; a < 16; a++)
 	{
-		ax = uStdSBox[1][a] << 15;	  
+		ax = uStdSBox[1][a] << 15;
 		bx = uStdSBox[3][a] << 23;
-		cx = uStdSBox[5][a];	      
+		cx = uStdSBox[5][a];
 		cx = (cx >> 1) | (cx << 31);
 		dx = uStdSBox[7][a] << 7;
 
 		for(b = 0; b < 16; b++)
 		{
-			g_pSBox1[i  ] = ax | (uStdSBox[0][b] << 11);		  
+			g_pSBox1[i  ] = ax | (uStdSBox[0][b] << 11);
 			g_pSBox2[i  ] = bx | (uStdSBox[2][b] << 19);
-			g_pSBox3[i  ] = cx | (uStdSBox[4][b] << 27);	  
+			g_pSBox3[i  ] = cx | (uStdSBox[4][b] << 27);
 			g_pSBox4[i++] = dx | (uStdSBox[6][b] <<  3);
 		}
 	}
@@ -127,16 +127,16 @@ void CGOSTHash::Init(RH_DATA_INFO *pInfo)
 	m_partial_bytes = 0;
 }
 
-void CGOSTHash::_Compress(unsigned long *h, unsigned long *m)
+void CGOSTHash::_Compress(UWORD32 *h, UWORD32 *m)
 {
-	int i;
+	INTPREF i;
 	UWORD32 l, r, t, k0[8], u[8], v[8], w[8], s[8];
 
 	memcpy(u, h, 32);
 	memcpy(v, m, 32);
 
-	for (i = 0; i < 8; i += 2)
-	{        
+	for(i = 0; i < 8; i += 2)
+	{
 		w[0] = u[0] ^ v[0]; // w = u XOR v
 		w[1] = u[1] ^ v[1];
 		w[2] = u[2] ^ v[2];
@@ -214,30 +214,30 @@ void CGOSTHash::_Compress(unsigned long *h, unsigned long *m)
 	// 12 rounds of the LFSR (computed from a product matrix) and XOR in M
 	u[0] = m[0] ^ s[6];
 	u[1] = m[1] ^ s[7];
-	u[2] = m[2] ^ (s[0] << 16) ^ (s[0] >> 16) ^ (s[0] & 0xFFFF) ^ 
+	u[2] = m[2] ^ (s[0] << 16) ^ (s[0] >> 16) ^ (s[0] & 0xFFFF) ^
 		(s[1] & 0xFFFF) ^ (s[1] >> 16) ^ (s[2] << 16) ^ s[6] ^ (s[6] << 16) ^
 		(s[7] & 0xFFFF0000) ^ (s[7] >> 16);
-	u[3] = m[3] ^ (s[0] & 0xFFFF) ^ (s[0] << 16) ^ (s[1] & 0xFFFF) ^ 
+	u[3] = m[3] ^ (s[0] & 0xFFFF) ^ (s[0] << 16) ^ (s[1] & 0xFFFF) ^
 		(s[1] << 16) ^ (s[1] >> 16) ^ (s[2] << 16) ^ (s[2] >> 16) ^
-		(s[3] << 16) ^ s[6] ^ (s[6] << 16) ^ (s[6] >> 16) ^ (s[7] & 0xFFFF) ^ 
+		(s[3] << 16) ^ s[6] ^ (s[6] << 16) ^ (s[6] >> 16) ^ (s[7] & 0xFFFF) ^
 		(s[7] << 16) ^ (s[7] >> 16);
-	u[4] = m[4] ^ 
-		(s[0] & 0xFFFF0000) ^ (s[0] << 16) ^ (s[0] >> 16) ^ 
+	u[4] = m[4] ^
+		(s[0] & 0xFFFF0000) ^ (s[0] << 16) ^ (s[0] >> 16) ^
 		(s[1] & 0xFFFF0000) ^ (s[1] >> 16) ^ (s[2] << 16) ^ (s[2] >> 16) ^
-		(s[3] << 16) ^ (s[3] >> 16) ^ (s[4] << 16) ^ (s[6] << 16) ^ 
+		(s[3] << 16) ^ (s[3] >> 16) ^ (s[4] << 16) ^ (s[6] << 16) ^
 		(s[6] >> 16) ^(s[7] & 0xFFFF) ^ (s[7] << 16) ^ (s[7] >> 16);
 	u[5] = m[5] ^ (s[0] << 16) ^ (s[0] >> 16) ^ (s[0] & 0xFFFF0000) ^
 		(s[1] & 0xFFFF) ^ s[2] ^ (s[2] >> 16) ^ (s[3] << 16) ^ (s[3] >> 16) ^
-		(s[4] << 16) ^ (s[4] >> 16) ^ (s[5] << 16) ^  (s[6] << 16) ^ 
+		(s[4] << 16) ^ (s[4] >> 16) ^ (s[5] << 16) ^  (s[6] << 16) ^
 		(s[6] >> 16) ^ (s[7] & 0xFFFF0000) ^ (s[7] << 16) ^ (s[7] >> 16);
 	u[6] = m[6] ^ s[0] ^ (s[1] >> 16) ^ (s[2] << 16) ^ s[3] ^ (s[3] >> 16) ^
-		(s[4] << 16) ^ (s[4] >> 16) ^ (s[5] << 16) ^ (s[5] >> 16) ^ s[6] ^ 
+		(s[4] << 16) ^ (s[4] >> 16) ^ (s[5] << 16) ^ (s[5] >> 16) ^ s[6] ^
 		(s[6] << 16) ^ (s[6] >> 16) ^ (s[7] << 16);
-	u[7] = m[7] ^ (s[0] & 0xFFFF0000) ^ (s[0] << 16) ^ (s[1] & 0xFFFF) ^ 
+	u[7] = m[7] ^ (s[0] & 0xFFFF0000) ^ (s[0] << 16) ^ (s[1] & 0xFFFF) ^
 		(s[1] << 16) ^ (s[2] >> 16) ^ (s[3] << 16) ^ s[4] ^ (s[4] >> 16) ^
-		(s[5] << 16) ^ (s[5] >> 16) ^ (s[6] >> 16) ^ (s[7] & 0xFFFF) ^ 
+		(s[5] << 16) ^ (s[5] >> 16) ^ (s[6] >> 16) ^ (s[7] & 0xFFFF) ^
 		(s[7] << 16) ^ (s[7] >> 16);
-  
+
 	// 16 * 1 round of the LFSR and XOR in H
 	v[0] = h[0] ^ (u[1] << 16) ^ (u[0] >> 16);
 	v[1] = h[1] ^ (u[2] << 16) ^ (u[1] >> 16);
@@ -250,48 +250,48 @@ void CGOSTHash::_Compress(unsigned long *h, unsigned long *m)
 		(u[1] & 0xFFFF0000) ^ (u[1] << 16) ^ (u[6] << 16) ^ (u[7] & 0xFFFF0000);
 
 	// 61 rounds of LFSR, mixing up h (computed from a product matrix)
-	h[0] = (v[0] & 0xFFFF0000) ^ (v[0] << 16) ^ (v[0] >> 16) ^ (v[1] >> 16) ^ 
+	h[0] = (v[0] & 0xFFFF0000) ^ (v[0] << 16) ^ (v[0] >> 16) ^ (v[1] >> 16) ^
 		(v[1] & 0xFFFF0000) ^ (v[2] << 16) ^ (v[3] >> 16) ^ (v[4] << 16) ^
-		(v[5] >> 16) ^ v[5] ^ (v[6] >> 16) ^ (v[7] << 16) ^ (v[7] >> 16) ^ 
+		(v[5] >> 16) ^ v[5] ^ (v[6] >> 16) ^ (v[7] << 16) ^ (v[7] >> 16) ^
 		(v[7] & 0xFFFF);
-	h[1] = (v[0] << 16) ^ (v[0] >> 16) ^ (v[0] & 0xFFFF0000) ^ (v[1] & 0xFFFF) ^ 
-		v[2] ^ (v[2] >> 16) ^ (v[3] << 16) ^ (v[4] >> 16) ^ (v[5] << 16) ^ 
+	h[1] = (v[0] << 16) ^ (v[0] >> 16) ^ (v[0] & 0xFFFF0000) ^ (v[1] & 0xFFFF) ^
+		v[2] ^ (v[2] >> 16) ^ (v[3] << 16) ^ (v[4] >> 16) ^ (v[5] << 16) ^
 		(v[6] << 16) ^ v[6] ^ (v[7] & 0xFFFF0000) ^ (v[7] >> 16);
-	h[2] = (v[0] & 0xFFFF) ^ (v[0] << 16) ^ (v[1] << 16) ^ (v[1] >> 16) ^ 
+	h[2] = (v[0] & 0xFFFF) ^ (v[0] << 16) ^ (v[1] << 16) ^ (v[1] >> 16) ^
 		(v[1] & 0xFFFF0000) ^ (v[2] << 16) ^ (v[3] >> 16) ^ v[3] ^ (v[4] << 16) ^
 		(v[5] >> 16) ^ v[6] ^ (v[6] >> 16) ^ (v[7] & 0xFFFF) ^ (v[7] << 16) ^
 		(v[7] >> 16);
-	h[3] = (v[0] << 16) ^ (v[0] >> 16) ^ (v[0] & 0xFFFF0000) ^ 
-		(v[1] & 0xFFFF0000) ^ (v[1] >> 16) ^ (v[2] << 16) ^ (v[2] >> 16) ^ v[2] ^ 
-		(v[3] << 16) ^ (v[4] >> 16) ^ v[4] ^ (v[5] << 16) ^ (v[6] << 16) ^ 
+	h[3] = (v[0] << 16) ^ (v[0] >> 16) ^ (v[0] & 0xFFFF0000) ^
+		(v[1] & 0xFFFF0000) ^ (v[1] >> 16) ^ (v[2] << 16) ^ (v[2] >> 16) ^ v[2] ^
+		(v[3] << 16) ^ (v[4] >> 16) ^ v[4] ^ (v[5] << 16) ^ (v[6] << 16) ^
 		(v[7] & 0xFFFF) ^ (v[7] >> 16);
-	h[4] = (v[0] >> 16) ^ (v[1] << 16) ^ v[1] ^ (v[2] >> 16) ^ v[2] ^ 
-		(v[3] << 16) ^ (v[3] >> 16) ^ v[3] ^ (v[4] << 16) ^ (v[5] >> 16) ^ 
+	h[4] = (v[0] >> 16) ^ (v[1] << 16) ^ v[1] ^ (v[2] >> 16) ^ v[2] ^
+		(v[3] << 16) ^ (v[3] >> 16) ^ v[3] ^ (v[4] << 16) ^ (v[5] >> 16) ^
 		v[5] ^ (v[6] << 16) ^ (v[6] >> 16) ^ (v[7] << 16);
-	h[5] = (v[0] << 16) ^ (v[0] & 0xFFFF0000) ^ (v[1] << 16) ^ (v[1] >> 16) ^ 
-		(v[1] & 0xFFFF0000) ^ (v[2] << 16) ^ v[2] ^ (v[3] >> 16) ^ v[3] ^ 
+	h[5] = (v[0] << 16) ^ (v[0] & 0xFFFF0000) ^ (v[1] << 16) ^ (v[1] >> 16) ^
+		(v[1] & 0xFFFF0000) ^ (v[2] << 16) ^ v[2] ^ (v[3] >> 16) ^ v[3] ^
 		(v[4] << 16) ^ (v[4] >> 16) ^ v[4] ^ (v[5] << 16) ^ (v[6] << 16) ^
 		(v[6] >> 16) ^ v[6] ^ (v[7] << 16) ^ (v[7] >> 16) ^ (v[7] & 0xFFFF0000);
-	h[6] = v[0] ^ v[2] ^ (v[2] >> 16) ^ v[3] ^ (v[3] << 16) ^ v[4] ^ 
-		(v[4] >> 16) ^ (v[5] << 16) ^ (v[5] >> 16) ^ v[5] ^ (v[6] << 16) ^ 
+	h[6] = v[0] ^ v[2] ^ (v[2] >> 16) ^ v[3] ^ (v[3] << 16) ^ v[4] ^
+		(v[4] >> 16) ^ (v[5] << 16) ^ (v[5] >> 16) ^ v[5] ^ (v[6] << 16) ^
 		(v[6] >> 16) ^ v[6] ^ (v[7] << 16) ^ v[7];
 	h[7] = v[0] ^ (v[0] >> 16) ^ (v[1] << 16) ^ (v[1] >> 16) ^ (v[2] << 16) ^
 		(v[3] >> 16) ^ v[3] ^ (v[4] << 16) ^ v[4] ^ (v[5] >> 16) ^ v[5] ^
 		(v[6] << 16) ^ (v[6] >> 16) ^ (v[7] << 16) ^ v[7];
 }
 
-void CGOSTHash::_Bytes(const unsigned char *pBuf, unsigned long uBits)
+void CGOSTHash::_Bytes(const UWORD8 *pBuf, UWORD32 uBits)
 {
-	int i, j = 0;
+	INTPREF i, j = 0;
 	UWORD32 a, c = 0, m[8];
 
 	// Convert bytes to 32-bit words and compute the sum
 	for(i = 0; i < 8; i++)
 	{
-		a = ((unsigned long)pBuf[j]) |
-			(((unsigned long)pBuf[j + 1]) << 8) |
-			(((unsigned long)pBuf[j + 2]) << 16) |
-			(((unsigned long)pBuf[j + 3]) << 24);
+		a = ((UWORD32)pBuf[j]) |
+			(((UWORD32)pBuf[j + 1]) << 8) |
+			(((UWORD32)pBuf[j + 2]) << 16) |
+			(((UWORD32)pBuf[j + 3]) << 24);
 
 		j += 4;
 		m[i] = a;
@@ -300,13 +300,13 @@ void CGOSTHash::_Bytes(const unsigned char *pBuf, unsigned long uBits)
 		if(c)
 		{
 			c = a + m_sum[i] + 1;
-			m_sum[i] = c;  
+			m_sum[i] = c;
 			c = c <= a;
 		}
 		else
 		{
 			c = a + m_sum[i];
-			m_sum[i] = c;  
+			m_sum[i] = c;
 			c = c < a;
 		}
 	}
@@ -319,9 +319,9 @@ void CGOSTHash::_Bytes(const unsigned char *pBuf, unsigned long uBits)
 		m_len[1]++;
 }
 
-void CGOSTHash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CGOSTHash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned int i, j = 0;
+	UINTPREF i, j = 0;
 
 	i = m_partial_bytes;
 
@@ -350,7 +350,7 @@ void CGOSTHash::Update(const unsigned char *pBuf, unsigned long uLen)
 
 void CGOSTHash::Final()
 {
-	int i, j = 0;
+	INTPREF i, j = 0;
 	UWORD32 a;
 
 	if(m_partial_bytes > 0)

@@ -41,15 +41,15 @@ public:
 	CSizeHash();
 	~CSizeHash();
 
-	const char *GetName() { return "SizeHash64"; }
-	const char *GetShortName() { return "SizeHash64"; }
-	unsigned long GetLength() {	return 8; }
-	unsigned long GetInternalLength() { return 8; }
+	const char *GetName() { return "Size64"; }
+	const char *GetShortName() { return "size64"; }
+	UINTPREF GetLength() { return 8; }
+	UINTPREF GetInternalLength() { return 8; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE64H(m_size64, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE64H(m_size64, pHash); }
 
 private:
 	UWORD64 m_size64;

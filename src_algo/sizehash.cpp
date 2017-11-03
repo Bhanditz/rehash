@@ -45,9 +45,9 @@ void CSizeHash::Init(RH_DATA_INFO *pInfo)
 	m_size64 = CONST64(0x0000000000000000);
 }
 
-void CSizeHash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CSizeHash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	m_size64 += uLen;
+	m_size64 += (UWORD64)uLen;
 }
 
 void CSizeHash::Final()

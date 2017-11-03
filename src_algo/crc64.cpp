@@ -177,9 +177,9 @@ void CCRC64Hash::Init(RH_DATA_INFO *pInfo)
 	m_crc64 = CONST64(0xFFFFFFFFFFFFFFFF);
 }
 
-void CCRC64Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CCRC64Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i;
+	UINTPREF i;
 
 	for(i = 0; i < uLen; i++)
 		m_crc64 = g_pCRC64Table[(UWORD8)(m_crc64 >> 56) ^ *pBuf++] ^ (m_crc64 << 8);

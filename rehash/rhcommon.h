@@ -52,7 +52,7 @@
 
 #define RH_PRODUCT_NAME "ReHash"
 #define RH_PRODUCT_FULL "ReHash - Console-Based Hash Calculator"
-#define RH_VERSION_STR  "0.1-unstable"
+#define RH_VERSION_STR  "0.2"
 
 // Must be at least 1 greater than the number of implemented hashes
 #define RH_MAX_ALGORITHMS 128
@@ -64,6 +64,7 @@
 #define RH_FILE_NOT_FOUND  4
 #define RH_BUFFER_OVERFLOW 5
 #define RH_FIND_DENIED     6
+#define RH_INTERNAL_ERR    7
 
 #define RH_MAX_PATH 1024
 
@@ -96,7 +97,7 @@
     defined(__i386__)  || defined(_M_I86)  || defined(_M_IX86)    || \
     defined(__OS2__)   || defined(sun386)  || defined(__TURBOC__) || \
     defined(vax)       || defined(vms)     || defined(VMS)        || \
-    defined(__VMS) 
+    defined(__VMS)
 #define RH_LITTLE_ENDIAN
 #endif
 
@@ -180,6 +181,82 @@
 	#define RH_TARGET_SYSTEM RH_TARGET_SYSTEM_LINUX
 #endif
 
+#undef UWORD8
+#undef UWORD16
+#undef UWORD32
+#undef UWORD64
+#undef SFX_32
+#undef SFX_64
+
+#pragma pack(1)
+
+#if (defined(__int8) || defined(_MSC_VER))
+typedef unsigned __int8 UWORD8;
+#elif (UCHAR_MAX == 0xFF)
+typedef unsigned char UWORD8;
+#else
+#error Cannot define an 8-bit unsigned integer type.
+#endif
+
+#if (defined(__int16) || defined(_MSC_VER))
+typedef unsigned __int16 UWORD16;
+#elif (USHRT_MAX == 0xFFFF)
+typedef unsigned short UWORD16;
+#else
+#error Cannot define an 16-bit unsigned integer type.
+#endif
+
+#if (defined(__int32) || defined(_MSC_VER))
+typedef unsigned __int32 UWORD32;
+#define SFX_32
+#elif (UINT_MAX == 0xFFFFFFFF)
+typedef unsigned int UWORD32;
+#define SFX_32
+#elif (ULONG_MAX == 0xFFFFFFFF)
+typedef unsigned long UWORD32;
+#define SFX_32
+#else
+#error Cannot define an 32-bit unsigned integer type.
+#endif
+
+#if (defined(__int64) || defined(_MSC_VER))
+typedef unsigned __int64 UWORD64;
+#define SFX_64
+#elif (UINT_MAX == 0xFFFFFFFFFFFFFFFF)
+typedef unsigned int UWORD64;
+#define SFX_64
+#elif (ULONG_MAX == 0xFFFFFFFFFFFFFFFF)
+typedef unsigned long UWORD64;
+#define SFX_64 ul
+#else
+typedef unsigned long long UWORD64;
+#define SFX_64 ull
+#endif
+
+#ifdef _MSC_VER
+#define CONST32(n) (n##ui32)
+#define CONST64(n) (n##ui64)
+#else
+// #define CONST32(n) (n##SFX_32)
+#define CONST32(n) (n)
+// #define CONST64(n) (n##SFX_64)
+#define CONST64(n) (n)
+#endif
+
+// Set the preferred integer type. This is the size of a register of the
+// processor, but at least 32-bit.
+#if (ULONG_MAX >= 0xFFFFFFFF)
+typedef unsigned long UINTPREF;
+typedef long INTPREF;
+#elif (UINT_MAX >= 0xFFFFFFFF)
+typedef unsigned int UINTPREF;
+typedef int INTPREF;
+#else
+#error Cannot define the preferred integer type.
+#endif
+
+#pragma pack()
+
 #if (RH_TARGET_SYSTEM == RH_TARGET_SYSTEM_WINDOWS)
 
 #include <windows.h>
@@ -190,13 +267,6 @@
 #ifndef chdir
 #define chdir _chdir
 #define getcwd _getcwd
-#endif
-
-#ifndef UWORD32
-typedef unsigned char UWORD8;
-typedef unsigned short UWORD16;
-typedef unsigned long UWORD32;
-typedef unsigned __int64 UWORD64;
 #endif
 
 #else // RH_TARGET_SYSTEM != RH_TARGET_SYSTEM_WINDOWS
@@ -213,23 +283,6 @@ typedef unsigned __int64 UWORD64;
 #define SZ_DIR_CHAR '/'
 #define SZ_DIR_STR  "/"
 
-#ifndef UWORD32
-typedef unsigned char UWORD8;
-typedef unsigned short UWORD16;
-typedef unsigned long UWORD32;
-typedef unsigned long long UWORD64;
-#endif
-
-#endif
-
-#ifndef CONST64
-#ifdef _MSC_VER
-#define CONST32(n) (n##ui32)
-#define CONST64(n) (n##ui64)
-#else
-#define CONST32(n) (n##UL)
-#define CONST64(n) (n##ULL)
-#endif
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -238,34 +291,34 @@ typedef unsigned long long UWORD64;
 #ifdef RH_LITTLE_ENDIAN
 
 #define STORE32H(x, y) \
-	{ (y)[0] = (unsigned char)(((x)>>24)&255); (y)[1] = (unsigned char)(((x)>>16)&255); \
-	(y)[2] = (unsigned char)(((x)>>8)&255); (y)[3] = (unsigned char)((x)&255); }
+	{ (y)[0] = (UWORD8)(((x)>>24)&255); (y)[1] = (UWORD8)(((x)>>16)&255); \
+	(y)[2] = (UWORD8)(((x)>>8)&255); (y)[3] = (UWORD8)((x)&255); }
 #define STORE16H(x, y) \
-	{ (y)[0] = (unsigned char)(((x)>>8)&255); (y)[1] = (unsigned char)((x)&255); }
+	{ (y)[0] = (UWORD8)(((x)>>8)&255); (y)[1] = (UWORD8)((x)&255); }
 #define LOAD32H(x, y) \
-	{ x = ((unsigned long)((y)[0] & 255)<<24) | \
-	((unsigned long)((y)[1] & 255)<<16) | \
-	((unsigned long)((y)[2] & 255)<<8)  | \
-	((unsigned long)((y)[3] & 255)); }
+	{ x = ((UWORD32)((y)[0] & 255)<<24) | \
+	((UWORD32)((y)[1] & 255)<<16) | \
+	((UWORD32)((y)[2] & 255)<<8)  | \
+	((UWORD32)((y)[3] & 255)); }
 #define STORE64H(x, y) \
-	{ (y)[0] = (unsigned char)(((x)>>56)&255); (y)[1] = (unsigned char)(((x)>>48)&255); \
-	(y)[2] = (unsigned char)(((x)>>40)&255); (y)[3] = (unsigned char)(((x)>>32)&255); \
-	(y)[4] = (unsigned char)(((x)>>24)&255); (y)[5] = (unsigned char)(((x)>>16)&255); \
-	(y)[6] = (unsigned char)(((x)>>8)&255); (y)[7] = (unsigned char)((x)&255); }
+	{ (y)[0] = (UWORD8)(((x)>>56)&255); (y)[1] = (UWORD8)(((x)>>48)&255); \
+	(y)[2] = (UWORD8)(((x)>>40)&255); (y)[3] = (UWORD8)(((x)>>32)&255); \
+	(y)[4] = (UWORD8)(((x)>>24)&255); (y)[5] = (UWORD8)(((x)>>16)&255); \
+	(y)[6] = (UWORD8)(((x)>>8)&255); (y)[7] = (UWORD8)((x)&255); }
 #define LOAD64H(x, y) \
 	{ x = (((UWORD64)((y)[0] & 255))<<56)|(((UWORD64)((y)[1] & 255))<<48) | \
 	(((UWORD64)((y)[2] & 255))<<40)|(((UWORD64)((y)[3] & 255))<<32) | \
 	(((UWORD64)((y)[4] & 255))<<24)|(((UWORD64)((y)[5] & 255))<<16) | \
 	(((UWORD64)((y)[6] & 255))<<8)|(((UWORD64)((y)[7] & 255))); }
 #define STORE32L(x, y) \
-	{ unsigned long __t = (x); memcpy(y, &__t, 4); }
+	{ UWORD32 __t = (x); memcpy(y, &__t, 4); }
 #define LOAD32L(x, y) \
 	memcpy(&(x), y, 4);
 #define STORE64L(x, y) \
-	{ (y)[7] = (unsigned char)(((x)>>56)&255); (y)[6] = (unsigned char)(((x)>>48)&255); \
-	(y)[5] = (unsigned char)(((x)>>40)&255); (y)[4] = (unsigned char)(((x)>>32)&255); \
-	(y)[3] = (unsigned char)(((x)>>24)&255); (y)[2] = (unsigned char)(((x)>>16)&255); \
-	(y)[1] = (unsigned char)(((x)>>8)&255); (y)[0] = (unsigned char)((x)&255); }
+	{ (y)[7] = (UWORD8)(((x)>>56)&255); (y)[6] = (UWORD8)(((x)>>48)&255); \
+	(y)[5] = (UWORD8)(((x)>>40)&255); (y)[4] = (UWORD8)(((x)>>32)&255); \
+	(y)[3] = (UWORD8)(((x)>>24)&255); (y)[2] = (UWORD8)(((x)>>16)&255); \
+	(y)[1] = (UWORD8)(((x)>>8)&255); (y)[0] = (UWORD8)((x)&255); }
 #define LOAD64L(x, y) \
 	{ x = (((UWORD64)((y)[7] & 255))<<56)|(((UWORD64)((y)[6] & 255))<<48)| \
 	(((UWORD64)((y)[5] & 255))<<40)|(((UWORD64)((y)[4] & 255))<<32)| \
@@ -275,34 +328,34 @@ typedef unsigned long long UWORD64;
 #elif defined(RH_BIG_ENDIAN)
 
 #define STORE32H(x, y) \
-     { unsigned long __t = (x); memcpy(y, &__t, 4); }
+     { UWORD32 __t = (x); memcpy(y, &__t, 4); }
 #define STORE16H(x, y) \
 	{ UWORD16 __t = (x); memcpy(y, &__t, 2); }
 #define LOAD32H(x, y)         \
 	memcpy(&(x), y, 4);
 #define STORE64H(x, y) \
-	{ (y)[7] = (unsigned char)(((x)>>56)&255); (y)[6] = (unsigned char)(((x)>>48)&255); \
-	(y)[5] = (unsigned char)(((x)>>40)&255); (y)[4] = (unsigned char)(((x)>>32)&255); \
-	(y)[3] = (unsigned char)(((x)>>24)&255); (y)[2] = (unsigned char)(((x)>>16)&255); \
-	(y)[1] = (unsigned char)(((x)>>8)&255); (y)[0] = (unsigned char)((x)&255); }
+	{ (y)[7] = (UWORD8)(((x)>>56)&255); (y)[6] = (UWORD8)(((x)>>48)&255); \
+	(y)[5] = (UWORD8)(((x)>>40)&255); (y)[4] = (UWORD8)(((x)>>32)&255); \
+	(y)[3] = (UWORD8)(((x)>>24)&255); (y)[2] = (UWORD8)(((x)>>16)&255); \
+	(y)[1] = (UWORD8)(((x)>>8)&255); (y)[0] = (UWORD8)((x)&255); }
 #define LOAD64H(x, y) \
 	{ x = (((UWORD64)((y)[7] & 255))<<56)|(((UWORD64)((y)[6] & 255))<<48)| \
 	(((UWORD64)((y)[5] & 255))<<40)|(((UWORD64)((y)[4] & 255))<<32)| \
 	(((UWORD64)((y)[3] & 255))<<24)|(((UWORD64)((y)[2] & 255))<<16)| \
 	(((UWORD64)((y)[1] & 255))<<8)|(((UWORD64)((y)[0] & 255))); }
 #define STORE32L(x, y) \
-	{ (y)[0] = (unsigned char)(((x)>>24)&255); (y)[1] = (unsigned char)(((x)>>16)&255); \
-	(y)[2] = (unsigned char)(((x)>>8)&255); (y)[3] = (unsigned char)((x)&255); }
+	{ (y)[0] = (UWORD8)(((x)>>24)&255); (y)[1] = (UWORD8)(((x)>>16)&255); \
+	(y)[2] = (UWORD8)(((x)>>8)&255); (y)[3] = (UWORD8)((x)&255); }
 #define LOAD32L(x, y) \
-	{ x = ((unsigned long)((y)[0] & 255)<<24) | \
-	((unsigned long)((y)[1] & 255)<<16) | \
-	((unsigned long)((y)[2] & 255)<<8)  | \
-	((unsigned long)((y)[3] & 255)); }
+	{ x = ((UWORD32)((y)[0] & 255)<<24) | \
+	((UWORD32)((y)[1] & 255)<<16) | \
+	((UWORD32)((y)[2] & 255)<<8)  | \
+	((UWORD32)((y)[3] & 255)); }
 #define STORE64L(x, y) \
-	{ (y)[0] = (unsigned char)(((x)>>56)&255); (y)[1] = (unsigned char)(((x)>>48)&255); \
-	(y)[2] = (unsigned char)(((x)>>40)&255); (y)[3] = (unsigned char)(((x)>>32)&255); \
-	(y)[4] = (unsigned char)(((x)>>24)&255); (y)[5] = (unsigned char)(((x)>>16)&255); \
-	(y)[6] = (unsigned char)(((x)>>8)&255); (y)[7] = (unsigned char)((x)&255); }
+	{ (y)[0] = (UWORD8)(((x)>>56)&255); (y)[1] = (UWORD8)(((x)>>48)&255); \
+	(y)[2] = (UWORD8)(((x)>>40)&255); (y)[3] = (UWORD8)(((x)>>32)&255); \
+	(y)[4] = (UWORD8)(((x)>>24)&255); (y)[5] = (UWORD8)(((x)>>16)&255); \
+	(y)[6] = (UWORD8)(((x)>>8)&255); (y)[7] = (UWORD8)((x)&255); }
 #define LOAD64L(x, y) \
 	{ x = (((UWORD64)((y)[0] & 255))<<56)|(((UWORD64)((y)[1] & 255))<<48) | \
 	(((UWORD64)((y)[2] & 255))<<40)|(((UWORD64)((y)[3] & 255))<<32) | \

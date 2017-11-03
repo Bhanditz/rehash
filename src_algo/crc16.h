@@ -42,14 +42,14 @@ public:
 	~CCRC16Hash();
 
 	const char *GetName() { return "CRC16"; }
-	const char *GetShortName() { return "CRC16"; }
-	unsigned long GetLength() {	return 2; }
-	unsigned long GetInternalLength() {	return 2; }
+	const char *GetShortName() { return "crc16"; }
+	UINTPREF GetLength() { return 2; }
+	UINTPREF GetInternalLength() { return 2; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE16H(m_crc16, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE16H(m_crc16, pHash); }
 
 private:
 	UWORD16 m_crc16;
@@ -61,15 +61,15 @@ public:
 	CCRC16CcittHash();
 	~CCRC16CcittHash();
 
-	const char *GetName() { return "CRC16-CCITT"; }
-	const char *GetShortName() { return "CRC16C"; }
-	unsigned long GetLength() { return 2; }
-	unsigned long GetInternalLength() { return 2; }
+	const char *GetName() { return "CRC16.CCITT"; }
+	const char *GetShortName() { return "crc16c"; }
+	UINTPREF GetLength() { return 2; }
+	UINTPREF GetInternalLength() { return 2; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE16H(m_crc16, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE16H(m_crc16, pHash); }
 
 private:
 	UWORD16 m_crc16;
@@ -81,15 +81,15 @@ public:
 	CCRC16XModemHash();
 	~CCRC16XModemHash();
 
-	const char *GetName() { return "CRC16-XMODEM"; }
-	const char *GetShortName() { return "CRC16XM"; }
-	unsigned long GetLength() { return 2; }
-	unsigned long GetInternalLength() { return 2; }
+	const char *GetName() { return "CRC16.XMODEM"; }
+	const char *GetShortName() { return "crc16x"; }
+	UINTPREF GetLength() { return 2; }
+	UINTPREF GetInternalLength() { return 2; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE16H(m_crc16, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE16H(m_crc16, pHash); }
 
 private:
 	UWORD16 m_crc16;

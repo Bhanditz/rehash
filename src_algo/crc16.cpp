@@ -81,9 +81,9 @@ void CCRC16Hash::Init(RH_DATA_INFO *pInfo)
 	m_crc16 = 0x0000;
 }
 
-void CCRC16Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CCRC16Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i;
+	UWORD32 i;
 
 	for(i = 0; i < uLen; i++)
 		m_crc16 = (m_crc16 >> 8) ^ g_pCRC16Tab[*pBuf++ ^ (m_crc16 & 0xFF)];
@@ -144,9 +144,9 @@ void CCRC16CcittHash::Init(RH_DATA_INFO *pInfo)
 	m_crc16 = 0xFFFF;
 }
 
-void CCRC16CcittHash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CCRC16CcittHash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i;
+	UWORD32 i;
 
 	for(i = 0; i < uLen; i++)
 		m_crc16 = g_pCRC16CcittTable[(UWORD8)(m_crc16 >> 8) ^ *pBuf++] ^ (m_crc16 << 8);
@@ -207,9 +207,9 @@ void CCRC16XModemHash::Init(RH_DATA_INFO *pInfo)
 	m_crc16 = 0x0000;
 }
 
-void CCRC16XModemHash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CCRC16XModemHash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i;
+	UWORD32 i;
 
 	for(i = 0; i < uLen; i++)
 		m_crc16 = g_pCRC16XModemTable[(m_crc16 ^ *pBuf++) & 0xFF] ^ (m_crc16 >> 8);

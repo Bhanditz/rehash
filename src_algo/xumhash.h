@@ -42,14 +42,14 @@ public:
 	~CXUM32Hash();
 
 	const char *GetName() { return "XUM32"; }
-	const char *GetShortName() { return "XUM32"; }
-	unsigned long GetLength() {	return 4; }
-	unsigned long GetInternalLength() { return 4; }
+	const char *GetShortName() { return "xum32"; }
+	UINTPREF GetLength() { return 4; }
+	UINTPREF GetInternalLength() { return 4; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE32H(m_xum32, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE32H(m_xum32, pHash); }
 
 private:
 	UWORD32 m_xum32;

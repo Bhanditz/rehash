@@ -44,15 +44,15 @@ public:
 	CRMD128Hash();
 	~CRMD128Hash();
 
-	const char *GetName() { return "RipeMD-128"; }
-	const char *GetShortName() { return "RMD128"; }
-	unsigned long GetLength() {	return 16; }
-	unsigned long GetInternalLength() {	return 64; }
+	const char *GetName() { return "RipeMD128"; }
+	const char *GetShortName() { return "rmd128"; }
+	UINTPREF GetLength() { return 16; }
+	UINTPREF GetInternalLength() { return 64; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_final, 16); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_final, 16); }
 
 private:
 	void _Compress();
@@ -70,15 +70,15 @@ public:
 	CRMD160Hash();
 	~CRMD160Hash();
 
-	const char *GetName() { return "RipeMD-160"; }
-	const char *GetShortName() { return "RMD160"; }
-	unsigned long GetLength() {	return 20; }
-	unsigned long GetInternalLength() {	return 64; }
+	const char *GetName() { return "RipeMD160"; }
+	const char *GetShortName() { return "rmd160"; }
+	UINTPREF GetLength() { return 20; }
+	UINTPREF GetInternalLength() { return 64; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_final, 20); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_final, 20); }
 
 private:
 	void _Compress();

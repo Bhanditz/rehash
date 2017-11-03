@@ -72,22 +72,22 @@ public:
 	~CMD5Hash();
 
 	const char *GetName() { return "MD5"; }
-	const char *GetShortName() { return "MD5"; }
-	unsigned long GetLength() {	return 16; }
-	unsigned long GetInternalLength() { return 64; }
+	const char *GetShortName() { return "md5"; }
+	UINTPREF GetLength() { return 16; }
+	UINTPREF GetInternalLength() { return 64; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_digest, 16); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_digest, 16); }
 
 private:
 	void _Transform(UWORD32 *pBuf, UWORD32 *pIn);
 
 	UWORD32 m_i[2];
 	UWORD32 m_buf[4];
-	unsigned char m_in[64];
-	unsigned char m_digest[16];
+	UWORD8 m_in[64];
+	UWORD8 m_digest[16];
 };
 
 #endif // ___MD5_H___

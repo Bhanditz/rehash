@@ -42,14 +42,14 @@ public:
 	~CFCS16Hash();
 
 	const char *GetName() { return "FCS16"; }
-	const char *GetShortName() { return "FCS16"; }
-	unsigned long GetLength() {	return 2; }
-	unsigned long GetInternalLength() { return 2; }
+	const char *GetShortName() { return "fcs16"; }
+	UINTPREF GetLength() { return 2; }
+	UINTPREF GetInternalLength() { return 2; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE16H(m_fcs16, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE16H(m_fcs16, pHash); }
 
 private:
 	UWORD16 m_fcs16;
@@ -62,14 +62,14 @@ public:
 	~CFCS32Hash();
 
 	const char *GetName() { return "FCS32"; }
-	const char *GetShortName() { return "FCS32"; }
-	unsigned long GetLength() { return 4; }
-	unsigned long GetInternalLength() { return 4; }
+	const char *GetShortName() { return "fcs32"; }
+	UINTPREF GetLength() { return 4; }
+	UINTPREF GetInternalLength() { return 4; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE32H(m_fcs32, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE32H(m_fcs32, pHash); }
 
 private:
 	UWORD32 m_fcs32;

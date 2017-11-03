@@ -45,9 +45,9 @@ void CGHash32b3::Init(RH_DATA_INFO *pInfo)
 	m_ghash32 = 0x00000000;
 }
 
-void CGHash32b3::Update(const unsigned char *pBuf, unsigned long uLen)
+void CGHash32b3::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i;
+	UINTPREF i;
 
 	for(i = 0; i < uLen; i++)
 		m_ghash32 = (m_ghash32 << 3) + m_ghash32 + pBuf[i];
@@ -72,9 +72,9 @@ void CGHash32b5::Init(RH_DATA_INFO *pInfo)
 	m_ghash32 = 0x00000000;
 }
 
-void CGHash32b5::Update(const unsigned char *pBuf, unsigned long uLen)
+void CGHash32b5::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i;
+	UINTPREF i;
 
 	for(i = 0; i < uLen; i++)
 		m_ghash32 = (m_ghash32 << 5) + m_ghash32 + pBuf[i];

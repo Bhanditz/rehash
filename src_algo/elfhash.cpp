@@ -45,9 +45,10 @@ void CELF32Hash::Init(RH_DATA_INFO *pInfo)
 	m_elf32 = CONST32(0x00000000);
 }
 
-void CELF32Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CELF32Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned long i, x;
+	UINTPREF i;
+	UWORD32 x;
 
 	for(i = 0; i < uLen; i++)
 	{

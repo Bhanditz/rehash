@@ -35,7 +35,7 @@
 static const char *g_pCodes =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-static const unsigned char g_pMap[256] =
+static const UWORD8 g_pMap[256] =
 {
 	255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
 	255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -69,10 +69,10 @@ CBase64Codec::~CBase64Codec()
 {
 }
 
-bool CBase64Codec::Encode(const unsigned char *pIn, unsigned long uInLen, unsigned char *pOut, unsigned long *uOutLen)
+bool CBase64Codec::Encode(const UWORD8 *pIn, UWORD32 uInLen, UWORD8 *pOut, UWORD32 *uOutLen)
 {
-	unsigned long i, len2, leven;
-	unsigned char *p;
+	UWORD32 i, len2, leven;
+	UWORD8 *p;
 
 	RH_ASSERT(pIn != NULL);
 	RH_ASSERT(uInLen != 0);
@@ -110,11 +110,11 @@ bool CBase64Codec::Encode(const unsigned char *pIn, unsigned long uInLen, unsign
 	return true;
 }
 
-bool CBase64Codec::Decode(const unsigned char *pIn, unsigned long uInLen, unsigned char *pOut, unsigned long *uOutLen)
+bool CBase64Codec::Decode(const UWORD8 *pIn, UWORD32 uInLen, UWORD8 *pOut, UWORD32 *uOutLen)
 {
-	unsigned long t, x, y, z;
-	unsigned char c;
-	int	g = 3;
+	UWORD32 t, x, y, z;
+	UWORD8 c;
+	INTPREF g = 3;
 
 	RH_ASSERT(pIn != NULL);
 	RH_ASSERT(uInLen != 0);
@@ -124,17 +124,17 @@ bool CBase64Codec::Decode(const unsigned char *pIn, unsigned long uInLen, unsign
 	for(x = y = z = t = 0; x < uInLen; x++)
 	{
 		c = g_pMap[pIn[x]];
-		if (c == 255) continue;
-		if (c == 254) { c = 0; g--; }
+		if(c == 255) continue;
+		if(c == 254) { c = 0; g--; }
 
 		t = (t << 6) | c;
 
-		if (++y == 4)
+		if(++y == 4)
 		{
 			if((z + g) > *uOutLen) { return false; } // Buffer overflow
-			pOut[z++] = (unsigned char)((t>>16)&255);
-			if(g > 1) pOut[z++] = (unsigned char)((t>>8)&255);
-			if(g > 2) pOut[z++] = (unsigned char)(t&255);
+			pOut[z++] = (UWORD8)((t>>16)&255);
+			if(g > 1) pOut[z++] = (UWORD8)((t>>8)&255);
+			if(g > 2) pOut[z++] = (UWORD8)(t&255);
 			y = t = 0;
 		}
 	}

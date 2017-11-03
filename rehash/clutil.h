@@ -64,8 +64,8 @@ char *_strlwr(char *s);
 #endif
 
 // Secure strcpy and strcat versions
-void rhstrcpy(char *szDest, const char *szSource, unsigned int nMaxBuf);
-void rhstrcat(char *szDest, const char *szAppend, unsigned int nMaxBuf);
+void rhstrcpy(char *szDest, const char *szSource, UINTPREF nMaxBuf);
+void rhstrcat(char *szDest, const char *szAppend, UINTPREF nMaxBuf);
 
 // Make full path
 void rhfullpathex(const char *pszRelative, char *pszAbsolute);

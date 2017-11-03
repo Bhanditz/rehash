@@ -50,8 +50,8 @@ bool isArgument(char *pszString)
 // Removes all unnecessary characters from an argument string
 void fmtArgument(char *pszArg, char *pszDest)
 {
-	unsigned int i;
-	unsigned int pos = 0;
+	UINTPREF i;
+	UINTPREF pos = 0;
 
 	RH_ASSERT(pszArg != NULL);
 	RH_ASSERT(pszDest != NULL);
@@ -81,7 +81,7 @@ void fmtArgument(char *pszArg, char *pszDest)
 
 void fmtPath(char *pszPath)
 {
-	unsigned int i;
+	UINTPREF i;
 	char chFind;
 	char chReplace;
 
@@ -98,13 +98,14 @@ void fmtPath(char *pszPath)
 
 	for(i = 0; i < strlen(pszPath); i++)
 	{
-		if(pszPath[i] == chFind) pszPath[i] = chReplace;
+		if(pszPath[i] == chFind)
+			pszPath[i] = chReplace;
 	}
 }
 
 void catdirsep(char *pszPath)
 {
-	unsigned int i;
+	UINTPREF i;
 
 	RH_ASSERT(pszPath != NULL);
 	RH_ASSERT(strlen(pszPath) != 0);
@@ -122,14 +123,14 @@ void catdirsep(char *pszPath)
 
 void pathonly(char *pszPath)
 {
-	unsigned int i;
+	UINTPREF i;
 	bool bReplaced = false;
 
 	RH_ASSERT(pszPath != NULL);
 	RH_ASSERT(strlen(pszPath) != 0);
 
 	i = strlen(pszPath) - 1;
-	if(i == ((unsigned int)-1)) return;
+	if(i == ((UINTPREF)-1)) return;
 	while(1)
 	{
 		if(pszPath[i] == SZ_DIR_CHAR)
@@ -140,7 +141,7 @@ void pathonly(char *pszPath)
 		}
 
 		i--;
-		if(i == (unsigned int)-1) break;
+		if(i == (UINTPREF)-1) break;
 	}
 
 	if(bReplaced == false) pszPath[0] = 0;
@@ -151,8 +152,7 @@ void pathonly(char *pszPath)
 void fileonly(char *pszPath)
 {
 	char szTemp[RH_MAX_PATH];
-	unsigned int i;
-	unsigned int j;
+	UINTPREF i, j;
 
 	RH_ASSERT(pszPath != NULL);
 
@@ -184,7 +184,7 @@ void fileonly(char *pszPath)
 // Is this a <..> or <.> path env descriptor?
 bool ispathnav(char *pszPath)
 {
-	unsigned int i;
+	UINTPREF i;
 
 	RH_ASSERT(pszPath != NULL);
 	RH_ASSERT(strlen(pszPath) != 0);
@@ -201,7 +201,7 @@ bool ispathnav(char *pszPath)
 
 bool haspath(char *pszPath)
 {
-	unsigned int i = 0;
+	UINTPREF i = 0;
 	bool bPath = false;
 
 	RH_ASSERT(pszPath != NULL);
@@ -226,7 +226,7 @@ bool haspath(char *pszPath)
 #if(RH_TARGET_SYSTEM != RH_TARGET_SYSTEM_WINDOWS)
 char *_strlwr(char *s)
 {
-	register char *cp;
+	char *cp;
 
 	for(cp = s; *cp; cp++)
 		*cp = tolower(*cp);
@@ -236,11 +236,11 @@ char *_strlwr(char *s)
 #endif
 
 // Secure string copy function
-void rhstrcpy(char *szDest, const char *szSource, unsigned int nMaxBuf)
+void rhstrcpy(char *szDest, const char *szSource, UINTPREF nMaxBuf)
 {
 	RH_ASSERT(szDest != NULL);
 	RH_ASSERT(szSource != NULL);
-	RH_ASSERT(nMaxBuf != (unsigned int)-1);
+	RH_ASSERT(nMaxBuf != (UINTPREF)-1);
 
 	if(strlen(szSource) < nMaxBuf)
 		strcpy(szDest, szSource);
@@ -252,17 +252,17 @@ void rhstrcpy(char *szDest, const char *szSource, unsigned int nMaxBuf)
 }
 
 // Secure string concatenation function
-void rhstrcat(char *szDest, const char *szAppend, unsigned int nMaxBuf)
+void rhstrcat(char *szDest, const char *szAppend, UINTPREF nMaxBuf)
 {
-	unsigned int lDest = strlen(szDest);
-	unsigned int lAppend = strlen(szAppend);
+	UINTPREF lDest = strlen(szDest);
+	UINTPREF lAppend = strlen(szAppend);
 
-	unsigned int lSum = lDest + lAppend;
+	UINTPREF lSum = lDest + lAppend;
 
 	RH_ASSERT(szDest != NULL);
 	RH_ASSERT(szAppend != NULL);
-	RH_ASSERT(nMaxBuf != (unsigned int)0);
-	RH_ASSERT(nMaxBuf != (unsigned int)-1);
+	RH_ASSERT(nMaxBuf != (UINTPREF)0);
+	RH_ASSERT(nMaxBuf != (UINTPREF)-1);
 
 	if(lSum >= nMaxBuf)
 		lAppend = nMaxBuf - (lDest + 1);

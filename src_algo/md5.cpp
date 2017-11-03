@@ -203,14 +203,14 @@ void CMD5Hash::Init(RH_DATA_INFO *pInfo)
 	m_buf[3] = (UWORD32)0x10325476;
 }
 
-void CMD5Hash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CMD5Hash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
 	UWORD32 pIn[16];
-	int mdi;
-	unsigned int i, ii;
+	INTPREF mdi;
+	UINTPREF i, ii;
 
 	// Compute number of bytes mod 64
-	mdi = (int)((m_i[0] >> 3) & 0x3F);
+	mdi = (INTPREF)((m_i[0] >> 3) & 0x3F);
 
 	// Update number of bits
 	if((m_i[0] + ((UWORD32)uLen << 3)) < m_i[0]) m_i[1]++; // Overflow
@@ -240,15 +240,15 @@ void CMD5Hash::Update(const unsigned char *pBuf, unsigned long uLen)
 void CMD5Hash::Final()
 {
 	UWORD32 pIn[16];
-	int mdi;
-	unsigned int i, ii, padLen;
+	INTPREF mdi;
+	UINTPREF i, ii, padLen;
 
 	// Save number of bits
 	pIn[14] = m_i[0];
 	pIn[15] = m_i[1];
 
 	// Compute number of bytes mod 64
-	mdi = (int)((m_i[0] >> 3) & 0x3F);
+	mdi = (INTPREF)((m_i[0] >> 3) & 0x3F);
 
 	// Pad out to 56 mod 64
 	padLen = (mdi < 56) ? (56 - mdi) : (120 - mdi);
@@ -265,9 +265,9 @@ void CMD5Hash::Final()
 	// Store buffer in digest
 	for(i = 0, ii = 0; i < 4; i++, ii += 4)
 	{
-		m_digest[ii]   = (unsigned char)( m_buf[i]        & 0xFF);
-		m_digest[ii+1] = (unsigned char)((m_buf[i] >>  8) & 0xFF);
-		m_digest[ii+2] = (unsigned char)((m_buf[i] >> 16) & 0xFF);
-		m_digest[ii+3] = (unsigned char)((m_buf[i] >> 24) & 0xFF);
+		m_digest[ii]   = (UWORD8)( m_buf[i]        & 0xFF);
+		m_digest[ii+1] = (UWORD8)((m_buf[i] >>  8) & 0xFF);
+		m_digest[ii+2] = (UWORD8)((m_buf[i] >> 16) & 0xFF);
+		m_digest[ii+3] = (UWORD8)((m_buf[i] >> 24) & 0xFF);
 	}
 }

@@ -45,7 +45,7 @@
 
 bool fpattern_isvalid(const char *pat)
 {
-	int len;
+	INTPREF len;
 
 	RH_ASSERT(pat != NULL);
 
@@ -109,11 +109,11 @@ bool fpattern_isvalid(const char *pat)
 
 bool _fpattern_submatch(const char *pat, const char *fname)
 {
-	int fch;
-	int pch;
-	int i;
-	int yes, match;
-	int lo, hi;
+	INTPREF fch;
+	INTPREF pch;
+	INTPREF i;
+	INTPREF yes, match;
+	INTPREF lo, hi;
 
 	RH_ASSERT(pat != NULL);
 	RH_ASSERT(fname != NULL);

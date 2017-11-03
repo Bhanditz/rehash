@@ -78,12 +78,12 @@
  *      collision-resistant property:
  *             It is computationally infeasible to find two or more
  *             messages that are hashed into the same fingerprint.
- *      
+ *
  *  Reference:
  *       Y. Zheng, J. Pieprzyk and J. Seberry:
  *       ``HAVAL --- a one-way hashing algorithm with variable
  *       length of output'', Advances in Cryptology --- AUSCRYPT'92,
- *       Lecture Notes in Computer Science,  Vol.718, pp.83-104, 
+ *       Lecture Notes in Computer Science,  Vol.718, pp.83-104,
  *       Springer-Verlag, 1993.
  *
  *  Descriptions:
@@ -122,14 +122,14 @@ public:
 	~CHaval256_3();
 
 	const char *GetName() { return "HAVAL256.3"; }
-	const char *GetShortName() { return "HAVAL3"; }
-	unsigned long GetLength() {	return 32; }
-	unsigned long GetInternalLength() { return 128; }
+	const char *GetShortName() { return "haval3"; }
+	UINTPREF GetLength() { return 32; }
+	UINTPREF GetInternalLength() { return 128; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_final, 32); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_final, 32); }
 
 private:
 	void _Compile();

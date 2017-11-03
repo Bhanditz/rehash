@@ -40,4 +40,9 @@
 
 bool rhSelfTest();
 
+// For ReHash it's essential that the types UWORD8, UWORD16, UWORD32 and
+// UWORD64 are defined correctly
+// This function should not output anything to the console
+UINTPREF _rhTestTypes();
+
 #endif ___SELF_TEST_H___

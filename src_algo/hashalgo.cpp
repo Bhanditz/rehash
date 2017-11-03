@@ -57,7 +57,7 @@
 
 void FillAlgorithmList(CHashAlgorithm **pList)
 {
-	int i = 0;
+	UINTPREF i = 0;
 
 	RH_ASSERT(pList != NULL);
 

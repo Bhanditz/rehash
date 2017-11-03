@@ -45,14 +45,14 @@ public:
 	~CED2KHash();
 
 	const char *GetName() { return "ED2K"; }
-	const char *GetShortName() { return "ED2K"; }
-	unsigned long GetLength() {	return 16; }
-	unsigned long GetInternalLength() { return 16; }
+	const char *GetShortName() { return "ed2k"; }
+	UINTPREF GetLength() { return 16; }
+	UINTPREF GetInternalLength() { return 16; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { memcpy(pHash, m_final, 16); }
+	void GetHash(UWORD8 *pHash) { memcpy(pHash, m_final, 16); }
 
 private:
 	UWORD32 m_nextPos;

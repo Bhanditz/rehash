@@ -61,7 +61,7 @@ void CHMAC::SetHashAlgorithm(CHashAlgorithm *pHashAlgorithm)
 	}
 }
 
-void CHMAC::SetKey(unsigned char *pKey, unsigned long uKeySize)
+void CHMAC::SetKey(UWORD8 *pKey, UINTPREF uKeySize)
 {
 	RH_DATA_INFO rhData;
 
@@ -88,8 +88,8 @@ void CHMAC::SetKey(unsigned char *pKey, unsigned long uKeySize)
 
 void CHMAC::Init(RH_DATA_INFO *pInfo)
 {
-	unsigned char pTmp[HMAC_MAX_BLOCK];
-	unsigned int i;
+	UWORD8 pTmp[HMAC_MAX_BLOCK];
+	UINTPREF i;
 
 	RH_ASSERT(m_pAlgo != NULL);
 
@@ -103,7 +103,7 @@ void CHMAC::Init(RH_DATA_INFO *pInfo)
 	m_pAlgo->Update(pTmp, m_lenBlock);
 }
 
-void CHMAC::Update(const unsigned char *pBuf, unsigned long uLen)
+void CHMAC::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
 	RH_ASSERT(m_pAlgo != NULL);
 
@@ -112,9 +112,9 @@ void CHMAC::Update(const unsigned char *pBuf, unsigned long uLen)
 
 void CHMAC::Final()
 {
-	unsigned char pInner[HMAC_MAX_BLOCK];
-	unsigned char pTmp[HMAC_MAX_BLOCK];
-	unsigned int i;
+	UWORD8 pInner[HMAC_MAX_BLOCK];
+	UWORD8 pTmp[HMAC_MAX_BLOCK];
+	UINTPREF i;
 	RH_DATA_INFO rhData;
 
 	RH_ASSERT(m_pAlgo != NULL);
@@ -138,7 +138,7 @@ void CHMAC::Final()
 
 void FillHMACList(CHMAC **pList, CHashAlgorithm **pAlgorithms)
 {
-	int i = 0;
+	UINTPREF i = 0;
 
 	RH_ASSERT(pList != NULL);
 	RH_ASSERT(pAlgorithms != NULL);

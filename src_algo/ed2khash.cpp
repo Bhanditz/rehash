@@ -48,10 +48,10 @@ void CED2KHash::Init(RH_DATA_INFO *pInfo)
 	m_hashBlock.Init(pInfo);
 }
 
-void CED2KHash::Update(const unsigned char *pBuf, unsigned long uLen)
+void CED2KHash::Update(const UWORD8 *pBuf, UINTPREF uLen)
 {
-	unsigned int firstLen;
-	unsigned char innerDigest[16];
+	UINTPREF firstLen;
+	UWORD8 innerDigest[16];
 
 	if((m_nextPos > 0) && ((m_nextPos % ED2K_BLOCKSIZE) == 0))
 	{
@@ -85,7 +85,7 @@ void CED2KHash::Update(const unsigned char *pBuf, unsigned long uLen)
 
 void CED2KHash::Final()
 {
-	unsigned char innerDigest[16];
+	UWORD8 innerDigest[16];
 
 	m_hashBlock.Final();
 

@@ -34,10 +34,13 @@
 #include "rehash.h"
 #include "benchmark.h"
 #include "selftest.h"
+#include "fnpattern.h"
+
+#pragma message("Test your creation by executing rehash -test")
 
 int main(int argc, char **argv)
 {
-	int i, t, nArgLen;
+	INTPREF i, t, nArgLen;
 	bool bOnce = true;
 	char szTemp[RH_MAX_STD_BUFFER];
 	char szPath[RH_MAX_PATH];
@@ -46,11 +49,7 @@ int main(int argc, char **argv)
 	bool bBenchmark = false;
 	CHashBenchmark hashbench;
 
-	// Test if the types were compiled correctly
-	RH_ASSERT(sizeof(UWORD8) == 1);
-	RH_ASSERT(sizeof(UWORD16) == 2);
-	RH_ASSERT(sizeof(UWORD32) == 4);
-	RH_ASSERT(sizeof(UWORD64) == 8);
+	RH_ASSERT(_rhTestTypes() == 0);
 
 	// Windows understands/requires console /n output
 	rhSetNewLine(false);
@@ -85,7 +84,7 @@ int main(int argc, char **argv)
 
 		if(strnicmpex(szTemp, "hmac:", 5) == 0)
 		{
-			hashmgr.SetHMAC(true, (unsigned char *)(szTemp + 5), nArgLen - 5);
+			hashmgr.SetHMAC(true, (UWORD8 *)(szTemp + 5), nArgLen - 5);
 		}
 
 		strlwr(szTemp);
@@ -120,6 +119,14 @@ int main(int argc, char **argv)
 		if(strcmp(szTemp, "norecursive") == 0) hashmgr.SetOption(HM_RECURSIVE, false);
 		if(strcmp(szTemp, "norecv") == 0) hashmgr.SetOption(HM_RECURSIVE, false);
 
+		if(strcmp(szTemp, "short") == 0) hashmgr.SetOption(HM_SHORTNAMES, true);
+		if(strcmp(szTemp, "shortnames") == 0) hashmgr.SetOption(HM_SHORTNAMES, true);
+		if(strcmp(szTemp, "snames") == 0) hashmgr.SetOption(HM_SHORTNAMES, true);
+		if(strcmp(szTemp, "fileonly") == 0) hashmgr.SetOption(HM_SHORTNAMES, true);
+		if(strcmp(szTemp, "filenameonly") == 0) hashmgr.SetOption(HM_SHORTNAMES, true);
+		if(strcmp(szTemp, "fullpath") == 0) hashmgr.SetOption(HM_SHORTNAMES, false);
+		if(strcmp(szTemp, "longpaths") == 0) hashmgr.SetOption(HM_SHORTNAMES, false);
+
 		if(strcmp(szTemp, "all" ) == 0) hashmgr.SelectAllAlgorithms(true);
 		if(strcmp(szTemp, "none") == 0) hashmgr.SelectAllAlgorithms(false);
 
@@ -151,6 +158,13 @@ int main(int argc, char **argv)
 
 	rhstrcpy(szMask, szPath, RH_MAX_PATH);
 	fileonly(szMask);
+
+	if(fpattern_isvalid(szMask) == false)
+	{
+		printf("Filename pattern invalid.");
+		rhNewLine();
+		return RH_NO_PATH;
+	}
 
 	if(haspath(szPath)) pathonly(szPath);
 	else getcwd(szPath, RH_MAX_PATH);
@@ -202,7 +216,7 @@ void printHelp()
 
 void printAlgorithms(CHashManager *pMgr)
 {
-	unsigned int i = 0;
+	UINTPREF i = 0;
 
 	RH_ASSERT(pMgr != NULL);
 

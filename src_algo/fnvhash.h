@@ -41,15 +41,15 @@ public:
 	CFNV32Hash();
 	~CFNV32Hash();
 
-	const char *GetName() { return "FNV32-1"; }
-	const char *GetShortName() { return "FNV32"; }
-	unsigned long GetLength() {	return 4; }
-	unsigned long GetInternalLength() { return 4; }
+	const char *GetName() { return "FNV32.1"; }
+	const char *GetShortName() { return "fnv32"; }
+	UINTPREF GetLength() { return 4; }
+	UINTPREF GetInternalLength() { return 4; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE32H(m_fnv32, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE32H(m_fnv32, pHash); }
 
 private:
 	UWORD32 m_fnv32;
@@ -61,15 +61,15 @@ public:
 	CFNV64Hash();
 	~CFNV64Hash();
 
-	const char *GetName() { return "FNV64-1"; }
-	const char *GetShortName() { return "FNV64"; }
-	unsigned long GetLength() {	return 8; }
-	unsigned long GetInternalLength() { return 8; }
+	const char *GetName() { return "FNV64.1"; }
+	const char *GetShortName() { return "fnv64"; }
+	UINTPREF GetLength() { return 8; }
+	UINTPREF GetInternalLength() { return 8; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE64H(m_fnv64, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE64H(m_fnv64, pHash); }
 
 private:
 	UWORD64 m_fnv64;

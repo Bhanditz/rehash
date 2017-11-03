@@ -38,12 +38,13 @@
 #include "hashoutput.h"
 #include "../src_algo/hmac.h"
 
-// HM_BUFFER_SIZE must be at least 64
+// HM_BUFFER_SIZE must be at least 64 and at least RH_MAX_PATH
 #define HM_BUFFER_SIZE 16384
 
-#define HM_NULL      0
-#define HM_RECURSIVE 1
-#define HM_LAST      2
+#define HM_NULL       0
+#define HM_RECURSIVE  1
+#define HM_SHORTNAMES 2
+#define HM_LAST       3
 
 class CHashManager
 {
@@ -52,17 +53,17 @@ public:
 	virtual ~CHashManager();
 
 	void SetOutputStyle(const char *pszOutputSchemeName);
-	void SetOption(int nOption, bool bFlag);
-	void SetHMAC(bool bHMAC, unsigned char *pKey, unsigned long uKeySize);
+	void SetOption(INTPREF nOption, bool bFlag);
+	void SetHMAC(bool bHMAC, UWORD8 *pKey, UINTPREF uKeySize);
 
 	void PrepareHashing();
 	void EndHashing();
 
 	bool HashPath(const char *pszPath, const char *pszMask);
-	int HashFile(const char *pszFile);
+	INTPREF HashFile(const char *pszFile);
 
-	int FindAlgorithm(const char *pszName, bool bShortName);
-	bool SelectAlgorithm(int nAlgorithm, bool bSelect = true);
+	INTPREF FindAlgorithm(const char *pszName, bool bShortName);
+	bool SelectAlgorithm(INTPREF nAlgorithm, bool bSelect = true);
 	void SelectAllAlgorithms(bool bSelect = true);
 
 	CHashAlgorithm *m_pAlgorithms[RH_MAX_ALGORITHMS];
@@ -75,6 +76,7 @@ private:
 
 	bool m_bRecursiveScanning;
 	bool m_bTimings;
+	bool m_bShortNames;
 
 	char m_szHMACKey[RH_MAX_STD_BUFFER];
 };

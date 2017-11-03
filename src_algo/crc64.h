@@ -42,14 +42,14 @@ public:
 	~CCRC64Hash();
 
 	const char *GetName() { return "CRC64"; }
-	const char *GetShortName() { return "CRC64"; }
-	unsigned long GetLength() {	return 8; }
-	unsigned long GetInternalLength() {	return 8; }
+	const char *GetShortName() { return "crc64"; }
+	UINTPREF GetLength() { return 8; }
+	UINTPREF GetInternalLength() { return 8; }
 
 	void Init(RH_DATA_INFO *pInfo);
-	void Update(const unsigned char *pBuf, unsigned long uLen);
+	void Update(const UWORD8 *pBuf, UINTPREF uLen);
 	void Final();
-	void GetHash(unsigned char *pHash) { STORE64H(m_crc64, pHash); }
+	void GetHash(UWORD8 *pHash) { STORE64H(m_crc64, pHash); }
 
 private:
 	UWORD64 m_crc64;
